@@ -1,0 +1,16 @@
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.Form1.resources
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.csproj.GenerateResource.cache
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.GeneratedMSBuildEditorConfig.editorconfig
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.AssemblyInfoInputs.cache
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.AssemblyInfo.cs
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.csproj.CoreCompileInputs.cache
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\bin\Debug\net8.0-windows\Project.exe
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\bin\Debug\net8.0-windows\Project.deps.json
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\bin\Debug\net8.0-windows\Project.runtimeconfig.json
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\bin\Debug\net8.0-windows\Project.dll
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\bin\Debug\net8.0-windows\Project.pdb
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.dll
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\refint\Project.dll
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.pdb
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\Project.genruntimeconfig.cache
+D:\Storage\Repo\C_sharp_Learning\wifi_try\Project\obj\Debug\net8.0-windows\ref\Project.dll

@@ -1,0 +1,26 @@
+--cpu Cortex-M3
+"core1\startup_stm32f103xe.o"
+"core1\main.o"
+"core1\gpio.o"
+"core1\usart.o"
+"core1\stm32f1xx_it.o"
+"core1\stm32f1xx_hal_msp.o"
+"core1\stm32f1xx_hal_gpio_ex.o"
+"core1\stm32f1xx_hal_tim.o"
+"core1\stm32f1xx_hal_tim_ex.o"
+"core1\stm32f1xx_hal_uart.o"
+"core1\stm32f1xx_hal.o"
+"core1\stm32f1xx_hal_rcc.o"
+"core1\stm32f1xx_hal_rcc_ex.o"
+"core1\stm32f1xx_hal_gpio.o"
+"core1\stm32f1xx_hal_dma.o"
+"core1\stm32f1xx_hal_cortex.o"
+"core1\stm32f1xx_hal_pwr.o"
+"core1\stm32f1xx_hal_flash.o"
+"core1\stm32f1xx_hal_flash_ex.o"
+"core1\stm32f1xx_hal_exti.o"
+"core1\system_stm32f1xx.o"
+--strict --scatter "core1\core1.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "core1.map" -o core1\core1.axf

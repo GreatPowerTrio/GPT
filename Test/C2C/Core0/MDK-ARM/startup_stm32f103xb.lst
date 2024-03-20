@@ -475,9 +475,9 @@ Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=core0\startup_stm32f103xb.d -ocore0\startup_stm32f103xb.o -Id:\Des
 ktop\GPT\Test\C2C\Core0\MDK-ARM\RTE -ID:\Applications\Keil\ARM\PACK\ARM\CMSIS\4
 .5.0\CMSIS\Include -ID:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Dev
-ice\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 520
-" --predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1" --list=startup_s
-tm32f103xb.lst startup_stm32f103xb.s
+ice\Include --predefine="__UVISION_VERSION SETA 520" --predefine="_RTE_ SETA 1"
+ --predefine="STM32F10X_MD SETA 1" --list=startup_stm32f103xb.lst startup_stm32
+f103xb.s
 
 
 
@@ -1203,4 +1203,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-410 symbols in table
+409 symbols in table

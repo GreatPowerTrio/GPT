@@ -25,3 +25,6 @@ core0\stm32f1xx_hal_msp.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cor
 core0\stm32f1xx_hal_msp.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 core0\stm32f1xx_hal_msp.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 core0\stm32f1xx_hal_msp.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
+core0\stm32f1xx_hal_msp.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+core0\stm32f1xx_hal_msp.o: ../Core/Inc/spi.h
+core0\stm32f1xx_hal_msp.o: ../Core/Inc/main.h

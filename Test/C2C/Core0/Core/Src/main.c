@@ -86,6 +86,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  C2C_Init();
 
   /* USER CODE END 2 */
 
@@ -93,6 +94,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    static uint8_t cnt = 0;
+    C2C_Write_Byte(cnt++);
+
+    if(cnt == 100) cnt = 0;
+
+    HAL_Delay(2);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

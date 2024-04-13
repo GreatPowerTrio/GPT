@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "stm32f1xx_hal.h": "c",
+    "main.h": "c",
+    "cmsis_os.h": "c",
+    "semphr.h": "c",
+    "freertos.h": "c",
+    "queue.h": "c",
+    "string.h": "c",
+    "task.h": "c",
+    "timers.h": "c",
+    "_mutex.h": "c"
+  }
+}

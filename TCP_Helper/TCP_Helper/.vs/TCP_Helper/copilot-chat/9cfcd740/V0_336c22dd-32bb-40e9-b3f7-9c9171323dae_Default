@@ -1,0 +1,1895 @@
+��DateTime�����fі�ThreadName��CopilotSessionId��Guid�$336c22dd-32bb-40e9-b3f7-9c9171323dae�ClientId��Id�4Microsoft.VisualStudio.Conversations.Chat.HelpWindow�Request��Request��$54ea4e34-939f-4744-aef2-b349ad1d95d9�$01608664-0685-424a-b04c-a981aaa2627d���ProviderMoniker��Name�6Microsoft.VisualStudio.Copilot.DocumentContextProvider�Version�0.1�Member�file�CanReduceéRequestId�$54ea4e34-939f-4744-aef2-b349ad1d95d9�Reference��Value�9�dّMicrosoft.VisualStudio.Copilot.DocumentContext, Microsoft.VisualStudio.Copilot, Version=0.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a��Content�8eusing System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+
+namespace TCP_Helper.Forms.Setting
+{
+	public partial class Form_Setting : Form
+	{
+		public string LAN_Mode = string.Empty;  //通信方式
+		public Func<int> GetEncoding; //获取编码格式
+		
+		public bool IsOpen = false; //局域网是否已经开启
+		public bool Running { get; set; } //是否正在运行 只能内部设置，供外部读取标志位
+		/// <summary>
+		/// 发送字节数
+		/// </summary>
+		private int SendBytes { get; set; }
+		/// <summary>
+		/// 接收字节速率
+		/// </summary>
+		private int RecByteSpeed { get; set; }
+		private int RecByteTemp { get; set; }
+		/// <summary>
+		/// 接收数据回调
+		/// </summary>
+		public event Action<byte[]> DataReceived;
+		/// <summary>
+		/// 数据处理
+		/// </summary>
+		public event Action<List<object>> DataHandler;
+		/// <summary>
+		/// 发送队列
+		/// </summary>
+		private readonly DataBuffer SendBuffer = new DataBuffer();
+		/// <summary>
+		/// 临时客户端信息
+		/// </summary>
+		private Hashtable clientTable = new Hashtable(30);
+		public Form_Setting()
+		{
+			InitializeComponent();
+			Running = false;
+			TXComboBox.Items.Add("TCP Server");
+			TXComboBox.Items.Add("TCP Client");
+			TXComboBox.Items.Add("UDP");
+		}
+		#region comboBox远程端点更改
+		private void ComboBox_RemoteIP_Add(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Add;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				RemoteIPComboBox.Items.Add(ep);
+			}
+		}
+
+		private void ComboBox_RemoteIP_Delete(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Delete;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				if (RemoteIPComboBox.Items.Contains(ep))
+					RemoteIPComboBox.Items.Remove(ep);
+				if (RemoteIPComboBox.Text == ep.ToString())
+					RemoteIPComboBox.Text = "";
+			}
+		}
+		#endregion
+
+		#region 开启定时器 接收速率更新
+		private void RecSpeedTimerStart()
+		{
+			System.Threading.Timer timer_1s = null;
+			timer_1s = new System.Threading.Timer(timer =>
+			{
+				if (IsOpen)
+				{
+					RecByteSpeed = RecByteTemp;
+					RecByteTemp = 0;
+				}
+				else
+				{
+					timer_1s.Dispose();
+				}
+			}, timer_1s, 0, 1000);
+		}
+
+
+		#endregion
+
+		#region TCP UDP 通信
+		private void BtnConnect_Click(object sender, EventArgs e)
+		{
+			if (BtnConnect.Text == "断开连接")
+			{
+				IsOpen = false;
+			}
+			else if (BtnConnect.Text == "打开连接")
+			{
+				if (TXComboBox.Text == "TCP Server")
+				{
+					TCPServerOpen();
+				}
+				else if (TXComboBox.Text == "TCP Client")
+				{
+					TCPClientConnect();
+				}
+				else if (TXComboBox.Text == "UDP")
+				{
+					UDPClientConnect();
+				}
+			}
+		}
+
+		#region TCP Server
+		private Socket TCPServer;
+		public void TCPServerOpen()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					//初始化SOCKET实例
+					TCPServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					//允许SOCKET被绑定在已使用的地址上。
+					TCPServer.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+					//绑定到指定IP，Port口上
+					string LocalAddress = ThisIPComboBox.Text;
+					TCPServer.Bind(new IPEndPoint(LocalAddress == "Any" ? IPAddress.Any : IPAddress.Parse(LocalAddress), Port));
+					//监听
+					TCPServer.Listen(30);
+					//开始接受连接，异步。
+					TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+					//服务器已开启
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					while (IsOpen)
+					{
+						if (SendBuffer.DataLenth() > 0 && RemoteIPComboBox.Items.Count > 0)
+						{
+							byte[] data = SendBuffer.GetDeleteData(-1);
+							if (RemoteIPComboBox.SelectedItem != null)
+							{
+								TCP_Server_Send(data, (EndPoint)RemoteIPComboBox.SelectedItem);
+							}
+							else
+							{
+								for (int i = 0; i < RemoteIPComboBox.Items.Count; i++)
+								{
+									if (i < RemoteIPComboBox.Items.Count)
+									{
+										EndPoint ep = (EndPoint)RemoteIPComboBox.Items[i];
+										TCP_Server_Send(data, (EndPoint)ep);
+									}
+								}
+							}
+							SendBytes += data.Length;
+							SleepTime = 1;
+						}
+						else
+						{
+							System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+							SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message, "开启服务器失败");
+				}
+				IsOpen = false;
+				TCPServer.Close();
+				TCPServer.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void OnConnectRequest(IAsyncResult ar)
+		{
+			try
+			{
+				if (!IsOpen) return;
+				///初始化一个SOCKET，用于其它客户端的连接
+				Socket client = TCPServer.EndAccept(ar);
+				EndPoint remote = client.RemoteEndPoint;
+				///设置超时时间2s
+				client.ReceiveTimeout = 2000;
+				///将客户端点添加到哈希表中
+				clientTable.Add(remote, client);
+				///添加到combox组件
+				ComboBox_RemoteIP_Add(remote);
+				///等待新的客户端连接
+				TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+
+				
+				///服务器未关闭
+				///连接正常
+				while (IsOpen && !(client.Poll(1000, SelectMode.SelectRead) && client.Available == 0))
+				{
+					try
+					{
+						byte[] newdata = new byte[1024];
+						int lenth = client.Receive(newdata);
+						DataReceived.Invoke(newdata.Take(lenth).ToArray());
+						RecByteTemp += lenth;
+					}
+					catch { }
+				}
+				clientTable.Remove(remote);
+				ComboBox_RemoteIP_Delete(remote);
+				client.Close();
+				client.Dispose();
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message, "客户端异常");
+				//重新开始异步连接
+				//TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+			}
+		}
+
+		/// <summary>
+		/// 发送
+		/// </summary>
+		private void TCP_Server_Send(byte[] data, EndPoint ep)
+		{
+			try
+			{
+				if (ep != null && clientTable.ContainsKey(ep))
+				{
+					Socket socket = (Socket)clientTable[ep];
+					socket.SendTo(data, ep);
+				}
+			}
+			catch { }
+		}
+		#endregion
+
+		#region TCP Client
+
+		Socket TCPClient;
+		private void TCPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task connect = Task.Run(() =>
+			{
+				TCPClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				try
+				{
+					TCPClient.Connect(new IPEndPoint(address, Port));
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+					//开启发送线程
+					Task SendTask = Task.Run(() =>
+					{
+						int SleepTime = 1;
+						while (IsOpen)
+						{
+							try
+							{
+								if (SendBuffer.DataLenth() > 0)
+								{
+									byte[] data = SendBuffer.GetDeleteData(-1);
+									TCPClient.Send(data);
+									SendBytes += data.Length;
+									SleepTime = 1;
+								}
+								else
+								{
+									System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+									SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+								}
+							}
+							catch { IsOpen = false; }
+						}
+					});
+
+					TCP_ClientListenning();
+				}
+				catch (SocketException ex)
+				{
+					//System.Threading.Thread.Sleep(1000); //1s后重新访问
+					//TCPServerConnect();  //一直访问直至连接
+					MessageBox.Show(ex.Message, "连接服务器失败");
+				}
+				IsOpen = false;
+				TCPClient.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void TCP_ClientListenning()
+		{
+			TCPClient.ReceiveTimeout = 2000; //设置超时时间2s
+
+			///客户端打开
+			///连接正常
+			while (IsOpen && !(TCPClient.Poll(1000, SelectMode.SelectRead) && TCPClient.Available == 0))
+			{
+				try
+				{
+					byte[] newdata = new byte[1024];
+					int lenth = TCPClient.Receive(newdata, 1024, SocketFlags.None);
+					DataReceived.Invoke(newdata.Take(lenth).ToArray());
+					RecByteTemp += lenth;
+				}
+				catch { }
+			}
+			if (IsOpen) MessageBox.Show(string.Format("与服务器 {0} 的连接已断开", TCPClient.RemoteEndPoint), "连接服务器异常");
+		}
+
+		#endregion
+
+		#region UDP
+
+		private void UDPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					UdpClient udpClient = new UdpClient(Port);
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启接收线程
+					Task RecTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							try
+							{
+								IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+								byte[] newdata = udpClient.Receive(ref ep);
+								DataReceived.Invoke(newdata);
+								RecByteTemp += newdata.Length;
+							}
+							catch { }
+						}
+					});
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					//发送循环
+					while (IsOpen)
+					{
+						try
+						{
+							if (SendBuffer.DataLenth() > 0)
+							{
+								try
+								{
+									Port = int.Parse(PortBox.Text);
+								}
+								catch (Exception ex)
+								{
+									MessageBox.Show(ex.Message, "Port输入错误");
+									continue;
+								}
+								byte[] data = SendBuffer.GetDeleteData(-1);
+								udpClient.Send(data, data.Length, new IPEndPoint(address, Port));
+								SendBytes += data.Length;
+								SleepTime = 1;
+							}
+							else
+							{
+								System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+								SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+							}
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show(ex.Message, "Udp Send");
+						}
+					}
+					udpClient.Close();
+				}
+				catch (SocketException ex)
+				{
+					MessageBox.Show(ex.Message, "开启UDP失败");
+				}
+				IsOpen = false;
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+
+		}
+		#endregion
+
+		#endregion
+
+		#region 发送数据添加
+
+		/// <summary>
+		/// 清除发送数据个数记录
+		/// </summary>
+		public void ClearSendBytes()
+		{
+			SendBytes = 0;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(string buff)
+		{
+			if (IsOpen)
+			{
+				switch (GetEncoding.Invoke())
+				{
+					case 0:
+						SendBuffer.AddendData(Encoding.ASCII.GetBytes(buff));
+						break;
+					case 1:
+						SendBuffer.AddendData(Encoding.UTF8.GetBytes(buff));
+						break;
+					case 2:
+						SendBuffer.AddendData(Encoding.Unicode.GetBytes(buff));
+						break;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(byte[] buff)
+		{
+			if (IsOpen)
+			{
+				SendBuffer.AddendData(buff);
+				return true;
+			}
+			return false;
+		}
+
+		#endregion
+
+		private void ThisIPComboBox_DropDown(object sender, EventArgs e)
+		{
+			try
+			{
+				ComboBox box = sender as ComboBox;
+				string text = box.Text;
+				box.Items.Clear();
+				box.Items.Add("Any");
+				IPAddress[] IPs = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+				foreach (IPAddress ip in IPs)
+				{
+					if (ip.AddressFamily.ToString().Equals("InterNetwork")) box.Items.Add(ip.ToString());
+				}
+				box.SelectedItem = text;
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+
+
+
+	}
+}
+�OriginalContent��Selections���Caret��Start�2�End�4��FilePath�GD:\Storage\Repo\GPT\TCP_Helper\TCP_Helper\Forms\Setting\Form_Setting.cs�Language�C#�����Value ��try
+			{
+				ComboBox box = sender as ComboBox;
+				string text = box.Text;
+				box.Items.Clear();
+				box.Items.Add("Any");
+				IPAddress[] IPs = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+				foreach (IPAddress ip in IPs)
+				{
+					if (ip.AddressFamily.ToString().Equals("InterNetwork")) box.Items.Add(ip.ToString());
+				}
+				box.SelectedItem = text;
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}��Response��Content�这段代码的主要目的是填充一个下拉列表（ComboBox）的项目，这些项目是当前主机的所有IPv4地址。这是通过以下步骤完成的：
+
+1. `ComboBox box = sender as ComboBox;`：这行代码将触发此事件的对象（在这种情况下应该是一个ComboBox）转换为ComboBox类型，并将其存储在变量`box`中。
+
+2. `string text = box.Text;`：这行代码获取ComboBox当前选中的文本，并将其存储在变量`text`中。
+
+3. `box.Items.Clear();`：这行代码清除ComboBox的所有项目。
+
+4. `box.Items.Add("Any");`：这行代码在ComboBox中添加一个名为"Any"的项目。
+
+5. `IPAddress[] IPs = Dns.GetHostEntry(Dns.GetHostName()).AddressList;`：这行代码获取当前主机的所有IP地址，并将其存储在`IPs`数组中。
+
+6. `foreach (IPAddress ip in IPs) {...}`：这个循环遍历所有的IP地址。
+
+   - `if (ip.AddressFamily.ToString().Equals("InterNetwork")) box.Items.Add(ip.ToString());`：如果IP地址是IPv4地址（AddressFamily为InterNetwork），则将其添加到ComboBox中。
+
+7. `box.SelectedItem = text;`：这行代码将ComboBox的选中项目设置为之前保存的文本。
+
+8. `catch (SocketException ex) {...}`：如果在执行上述操作时发生SocketException异常，将显示一个包含异常消息的消息框。
+
+这段代码通常用于网络应用程序，其中需要用户选择一个IP地址。例如，如果你正在编写一个TCP服务器应用程序，你可能希望用户选择服务器应该绑定到的IP地址。�Type �Status�FollowUpPrompts��A如何修改代码以只显示IPv6地址，而不是IPv4地址？�<这段代码是否能在所有操作系统上正常工作？�CodeVulnerabilities���DateTime��ی��f���ThreadName��CopilotSessionId��Guid�$336c22dd-32bb-40e9-b3f7-9c9171323dae�ClientId��Id�4Microsoft.VisualStudio.Conversations.Chat.HelpWindow�Request��Request��$067b7173-827b-46de-be57-73185a335d23�$ac3f25dd-9590-44ba-b7b0-62a95c0e5ef3���ProviderMoniker��Name�6Microsoft.VisualStudio.Copilot.DocumentContextProvider�Version�0.1�Member�file�CanReduceéRequestId�$067b7173-827b-46de-be57-73185a335d23�Reference��Value�:(dّMicrosoft.VisualStudio.Copilot.DocumentContext, Microsoft.VisualStudio.Copilot, Version=0.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a��Content�8�using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Sunny.UI;
+
+namespace TCP_Helper.Forms.Setting
+{
+	public partial class Form_Setting : Form
+	{
+		public string LAN_Mode = string.Empty;  //通信方式
+		public Func<int> GetEncoding; //获取编码格式
+		
+		public bool IsOpen = false; //局域网是否已经开启
+		public bool Running { get; set; } //是否正在运行 只能内部设置，供外部读取标志位
+		/// <summary>
+		/// 发送字节数
+		/// </summary>
+		private int SendBytes { get; set; }
+		/// <summary>
+		/// 接收字节速率
+		/// </summary>
+		private int RecByteSpeed { get; set; }
+		private int RecByteTemp { get; set; }
+		/// <summary>
+		/// 接收数据回调
+		/// </summary>
+		public event Action<byte[]> DataReceived;
+		/// <summary>
+		/// 数据处理
+		/// </summary>
+		public event Action<List<object>> DataHandler;
+		/// <summary>
+		/// 发送队列
+		/// </summary>
+		private readonly DataBuffer SendBuffer = new DataBuffer();
+		/// <summary>
+		/// 临时客户端信息
+		/// </summary>
+		private Hashtable clientTable = new Hashtable(30);
+		public Form_Setting()
+		{
+			InitializeComponent();
+			Running = false;
+			TXComboBox.Items.Add("TCP Server");
+			TXComboBox.Items.Add("TCP Client");
+			TXComboBox.Items.Add("UDP");
+		}
+		#region comboBox远程端点更改
+		private void ComboBox_RemoteIP_Add(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Add;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				RemoteIPComboBox.Items.Add(ep);
+			}
+		}
+
+		private void ComboBox_RemoteIP_Delete(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Delete;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				if (RemoteIPComboBox.Items.Contains(ep))
+					RemoteIPComboBox.Items.Remove(ep);
+				if (RemoteIPComboBox.Text == ep.ToString())
+					RemoteIPComboBox.Text = "";
+			}
+		}
+		#endregion
+
+		#region 开启定时器 接收速率更新
+		private void RecSpeedTimerStart()
+		{
+			System.Threading.Timer timer_1s = null;
+			timer_1s = new System.Threading.Timer(timer =>
+			{
+				if (IsOpen)
+				{
+					RecByteSpeed = RecByteTemp;
+					RecByteTemp = 0;
+				}
+				else
+				{
+					timer_1s.Dispose();
+				}
+			}, timer_1s, 0, 1000);
+		}
+
+
+		#endregion
+
+		#region TCP UDP 通信
+		private void BtnConnect_Click(object sender, EventArgs e)
+		{
+			if (BtnConnect.Text == "断开连接")
+			{
+				IsOpen = false;
+			}
+			else if (BtnConnect.Text == "打开连接")
+			{
+				if (TXComboBox.Text == "TCP Server")
+				{
+					TCPServerOpen();
+				}
+				else if (TXComboBox.Text == "TCP Client")
+				{
+					TCPClientConnect();
+				}
+				else if (TXComboBox.Text == "UDP")
+				{
+					UDPClientConnect();
+				}
+			}
+		}
+
+		#region TCP Server
+		private Socket TCPServer;
+		public void TCPServerOpen()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					//初始化SOCKET实例
+					TCPServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					//允许SOCKET被绑定在已使用的地址上。
+					TCPServer.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+					//绑定到指定IP，Port口上
+					string LocalAddress = ThisIPComboBox.Text;
+					TCPServer.Bind(new IPEndPoint(LocalAddress == "Any" ? IPAddress.Any : IPAddress.Parse(LocalAddress), Port));
+					//监听
+					TCPServer.Listen(30);
+					//开始接受连接，异步。
+					TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+					//服务器已开启
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					while (IsOpen)
+					{
+						if (SendBuffer.DataLenth() > 0 && RemoteIPComboBox.Items.Count > 0)
+						{
+							byte[] data = SendBuffer.GetDeleteData(-1);
+							if (RemoteIPComboBox.SelectedItem != null)
+							{
+								TCP_Server_Send(data, (EndPoint)RemoteIPComboBox.SelectedItem);
+							}
+							else
+							{
+								for (int i = 0; i < RemoteIPComboBox.Items.Count; i++)
+								{
+									if (i < RemoteIPComboBox.Items.Count)
+									{
+										EndPoint ep = (EndPoint)RemoteIPComboBox.Items[i];
+										TCP_Server_Send(data, (EndPoint)ep);
+									}
+								}
+							}
+							SendBytes += data.Length;
+							SleepTime = 1;
+						}
+						else
+						{
+							System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+							SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message, "开启服务器失败");
+				}
+				IsOpen = false;
+				TCPServer.Close();
+				TCPServer.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void OnConnectRequest(IAsyncResult ar)
+		{
+			try
+			{
+				if (!IsOpen) return;
+				///初始化一个SOCKET，用于其它客户端的连接
+				Socket client = TCPServer.EndAccept(ar);
+				EndPoint remote = client.RemoteEndPoint;
+				///设置超时时间2s
+				client.ReceiveTimeout = 2000;
+				///将客户端点添加到哈希表中
+				clientTable.Add(remote, client);
+				///添加到combox组件
+				ComboBox_RemoteIP_Add(remote);
+				///等待新的客户端连接
+				TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+
+				
+				///服务器未关闭
+				///连接正常
+				while (IsOpen && !(client.Poll(1000, SelectMode.SelectRead) && client.Available == 0))
+				{
+					try
+					{
+						byte[] newdata = new byte[1024];
+						int lenth = client.Receive(newdata);
+						DataReceived.Invoke(newdata.Take(lenth).ToArray());
+						RecByteTemp += lenth;
+					}
+					catch { }
+				}
+				clientTable.Remove(remote);
+				ComboBox_RemoteIP_Delete(remote);
+				client.Close();
+				client.Dispose();
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message, "客户端异常");
+				//重新开始异步连接
+				//TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+			}
+		}
+
+		/// <summary>
+		/// 发送
+		/// </summary>
+		private void TCP_Server_Send(byte[] data, EndPoint ep)
+		{
+			try
+			{
+				if (ep != null && clientTable.ContainsKey(ep))
+				{
+					Socket socket = (Socket)clientTable[ep];
+					socket.SendTo(data, ep);
+				}
+			}
+			catch { }
+		}
+		#endregion
+
+		#region TCP Client
+
+		Socket TCPClient;
+		private void TCPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task connect = Task.Run(() =>
+			{
+				TCPClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				try
+				{
+					TCPClient.Connect(new IPEndPoint(address, Port));
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+					//开启发送线程
+					Task SendTask = Task.Run(() =>
+					{
+						int SleepTime = 1;
+						while (IsOpen)
+						{
+							try
+							{
+								if (SendBuffer.DataLenth() > 0)
+								{
+									byte[] data = SendBuffer.GetDeleteData(-1);
+									TCPClient.Send(data);
+									SendBytes += data.Length;
+									SleepTime = 1;
+								}
+								else
+								{
+									System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+									SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+								}
+							}
+							catch { IsOpen = false; }
+						}
+					});
+
+					TCP_ClientListenning();
+				}
+				catch (SocketException ex)
+				{
+					//System.Threading.Thread.Sleep(1000); //1s后重新访问
+					//TCPServerConnect();  //一直访问直至连接
+					MessageBox.Show(ex.Message, "连接服务器失败");
+				}
+				IsOpen = false;
+				TCPClient.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void TCP_ClientListenning()
+		{
+			TCPClient.ReceiveTimeout = 2000; //设置超时时间2s
+
+			///客户端打开
+			///连接正常
+			while (IsOpen && !(TCPClient.Poll(1000, SelectMode.SelectRead) && TCPClient.Available == 0))
+			{
+				try
+				{
+					byte[] newdata = new byte[1024];
+					int lenth = TCPClient.Receive(newdata, 1024, SocketFlags.None);
+					DataReceived.Invoke(newdata.Take(lenth).ToArray());
+					RecByteTemp += lenth;
+				}
+				catch { }
+			}
+			if (IsOpen) MessageBox.Show(string.Format("与服务器 {0} 的连接已断开", TCPClient.RemoteEndPoint), "连接服务器异常");
+		}
+
+		#endregion
+
+		#region UDP
+
+		private void UDPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					UdpClient udpClient = new UdpClient(Port);
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启接收线程
+					Task RecTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							try
+							{
+								IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+								byte[] newdata = udpClient.Receive(ref ep);
+								DataReceived.Invoke(newdata);
+								RecByteTemp += newdata.Length;
+							}
+							catch { }
+						}
+					});
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					//发送循环
+					while (IsOpen)
+					{
+						try
+						{
+							if (SendBuffer.DataLenth() > 0)
+							{
+								try
+								{
+									Port = int.Parse(PortBox.Text);
+								}
+								catch (Exception ex)
+								{
+									MessageBox.Show(ex.Message, "Port输入错误");
+									continue;
+								}
+								byte[] data = SendBuffer.GetDeleteData(-1);
+								udpClient.Send(data, data.Length, new IPEndPoint(address, Port));
+								SendBytes += data.Length;
+								SleepTime = 1;
+							}
+							else
+							{
+								System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+								SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+							}
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show(ex.Message, "Udp Send");
+						}
+					}
+					udpClient.Close();
+				}
+				catch (SocketException ex)
+				{
+					MessageBox.Show(ex.Message, "开启UDP失败");
+				}
+				IsOpen = false;
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+
+		}
+		#endregion
+
+		#endregion
+
+		#region 发送数据添加
+
+		/// <summary>
+		/// 清除发送数据个数记录
+		/// </summary>
+		public void ClearSendBytes()
+		{
+			SendBytes = 0;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(string buff)
+		{
+			if (IsOpen)
+			{
+				switch (GetEncoding.Invoke())
+				{
+					case 0:
+						SendBuffer.AddendData(Encoding.ASCII.GetBytes(buff));
+						break;
+					case 1:
+						SendBuffer.AddendData(Encoding.UTF8.GetBytes(buff));
+						break;
+					case 2:
+						SendBuffer.AddendData(Encoding.Unicode.GetBytes(buff));
+						break;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(byte[] buff)
+		{
+			if (IsOpen)
+			{
+				SendBuffer.AddendData(buff);
+				return true;
+			}
+			return false;
+		}
+
+		#endregion
+
+
+		#region 本地IP地址获取
+		private void ThisIPComboBox_DropDown(object sender, EventArgs e)
+		{
+			try
+			{
+				UIComboBox box = sender as UIComboBox; //获取当前下拉框
+				string text = box.Text; 
+				box.Items.Clear();
+				box.Items.Add("Any");
+				IPAddress[] IPs = Dns.GetHostEntry(Dns.GetHostName()).AddressList; //获取本机所有IP
+				foreach (IPAddress ip in IPs)
+				{
+					if (ip.AddressFamily.ToString().Equals("InterNetwork")) box.Items.Add(ip.ToString()); //填充下拉框加入本机IP
+				}
+				box.SelectedItem = text;
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+		#endregion
+
+
+	}
+}
+�OriginalContent��Selections���Caret��Start�
+��End��FilePath�GD:\Storage\Repo\GPT\TCP_Helper\TCP_Helper\Forms\Setting\Form_Setting.cs�Language�C#�����Value �if (TXComboBox.Text == "TCP Server")
+				{
+					TCPServerOpen();
+				}
+				else if (TXComboBox.Text == "TCP Client")
+				{
+					TCPClientConnect();
+				}
+				else if (TXComboBox.Text == "UDP")
+				{
+					UDPClientConnect();
+				}为什么无法识别到文本进if��Response��Content�,这段代码的目的是根据 `TXComboBox` 的文本值来决定执行哪个方法。如果 `TXComboBox.Text` 的值是 "TCP Server"，"TCP Client" 或 "UDP"，则会分别执行 `TCPServerOpen()`，`TCPClientConnect()` 或 `UDPClientConnect()` 方法。
+
+如果你发现这段代码无法进入任何一个 `if` 或 `else if` 语句，那么可能的原因有：
+
+1. `TXComboBox.Text` 的值可能不是 "TCP Server"，"TCP Client" 或 "UDP"。你可以通过在这段代码前面添加一行代码 `Console.WriteLine(TXComboBox.Text);` 来查看 `TXComboBox.Text` 的实际值。
+
+2. 如果 `TXComboBox.Text` 的值确实是 "TCP Server"，"TCP Client" 或 "UDP"，但是仍然无法进入相应的 `if` 或 `else if` 语句，那么可能的原因是 `TXComboBox.Text` 的值前后有额外的空格。你可以使用 `TXComboBox.Text.Trim()` 来移除前后的空格。
+
+3. 如果 `TXComboBox` 是一个用户界面元素，那么可能的原因是这段代码执行时用户界面还没有完全加载，因此 `TXComboBox.Text` 的值还没有被正确设置。你可以尝试在用户界面加载完成后再执行这段代码。
+
+4. 如果以上都不是原因，那么可能的原因是 `TXComboBox.Text` 的值在某个地方被改变了。你可以检查一下 `TXComboBox.Text` 的值在哪里可能被改变。�Type �Status�FollowUpPrompts��j我应该在哪里添加 `Console.WriteLine(TXComboBox.Text);` 来查看 `TXComboBox.Text` 的实际值？�?我如何在用户界面加载完成后再执行这段代码？�CodeVulnerabilities���DateTime��ײspf�U�ThreadName��CopilotSessionId��Guid�$336c22dd-32bb-40e9-b3f7-9c9171323dae�ClientId��Id�4Microsoft.VisualStudio.Conversations.Chat.HelpWindow�Request��Request��$d487048d-9c76-4646-abb9-2389033510d3�$5e0dfd1a-32d3-4e22-8990-0beb338d948e���ProviderMoniker��Name�6Microsoft.VisualStudio.Copilot.DocumentContextProvider�Version�0.1�Member�file�CanReduceéRequestId�$d487048d-9c76-4646-abb9-2389033510d3�Reference��Value�:(dّMicrosoft.VisualStudio.Copilot.DocumentContext, Microsoft.VisualStudio.Copilot, Version=0.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a��Content�8�using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Sunny.UI;
+
+namespace TCP_Helper.Forms.Setting
+{
+	public partial class Form_Setting : Form
+	{
+		public string LAN_Mode = string.Empty;  //通信方式
+		public Func<int> GetEncoding; //获取编码格式
+		
+		public bool IsOpen = false; //局域网是否已经开启
+		public bool Running { get; set; } //是否正在运行 只能内部设置，供外部读取标志位
+		/// <summary>
+		/// 发送字节数
+		/// </summary>
+		private int SendBytes { get; set; }
+		/// <summary>
+		/// 接收字节速率
+		/// </summary>
+		private int RecByteSpeed { get; set; }
+		private int RecByteTemp { get; set; }
+		/// <summary>
+		/// 接收数据回调
+		/// </summary>
+		public event Action<byte[]> DataReceived;
+		/// <summary>
+		/// 数据处理
+		/// </summary>
+		public event Action<List<object>> DataHandler;
+		/// <summary>
+		/// 发送队列
+		/// </summary>
+		private readonly DataBuffer SendBuffer = new DataBuffer();
+		/// <summary>
+		/// 临时客户端信息
+		/// </summary>
+		private Hashtable clientTable = new Hashtable(30);
+		public Form_Setting()
+		{
+			InitializeComponent();
+			Running = false;
+			TXComboBox.Items.Add("TCP Server");
+			TXComboBox.Items.Add("TCP Client");
+			TXComboBox.Items.Add("UDP");
+		}
+		#region comboBox远程端点更改
+		private void ComboBox_RemoteIP_Add(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Add;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				RemoteIPComboBox.Items.Add(ep);
+			}
+		}
+
+		private void ComboBox_RemoteIP_Delete(EndPoint ep)
+		{
+			if (RemoteIPComboBox.InvokeRequired)
+			{
+				Action<EndPoint> action = ComboBox_RemoteIP_Delete;
+				RemoteIPComboBox.Invoke(action, ep);
+			}
+			else
+			{
+				if (RemoteIPComboBox.Items.Contains(ep))
+					RemoteIPComboBox.Items.Remove(ep);
+				if (RemoteIPComboBox.Text == ep.ToString())
+					RemoteIPComboBox.Text = "";
+			}
+		}
+		#endregion
+
+		#region 开启定时器 接收速率更新
+		private void RecSpeedTimerStart()
+		{
+			System.Threading.Timer timer_1s = null;
+			timer_1s = new System.Threading.Timer(timer =>
+			{
+				if (IsOpen)
+				{
+					RecByteSpeed = RecByteTemp;
+					RecByteTemp = 0;
+				}
+				else
+				{
+					timer_1s.Dispose();
+				}
+			}, timer_1s, 0, 1000);
+		}
+
+
+		#endregion
+
+		#region TCP UDP 通信
+		private void BtnConnect_Click(object sender, EventArgs e)
+		{
+			if (BtnConnect.Text == "断开连接")
+			{
+				IsOpen = false;
+			}
+			else if (BtnConnect.Text == "打开连接")
+			{
+				if (TXComboBox.Text == "TCP Server")
+				{
+					TCPServerOpen();
+				}
+				else if (TXComboBox.Text == "TCP Client")
+				{
+					TCPClientConnect();
+				}
+				else if (TXComboBox.Text == "UDP")
+				{
+					UDPClientConnect();
+				}
+			}
+		}
+
+		#region TCP Server
+		private Socket TCPServer;
+		public void TCPServerOpen()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					//初始化SOCKET实例
+					TCPServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					//允许SOCKET被绑定在已使用的地址上。
+					TCPServer.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+					//绑定到指定IP，Port口上
+					string LocalAddress = ThisIPComboBox.Text;
+					TCPServer.Bind(new IPEndPoint(LocalAddress == "Any" ? IPAddress.Any : IPAddress.Parse(LocalAddress), Port));
+					//监听
+					TCPServer.Listen(30);
+					//开始接受连接，异步。
+					TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+					//服务器已开启
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					while (IsOpen)
+					{
+						if (SendBuffer.DataLenth() > 0 && RemoteIPComboBox.Items.Count > 0)
+						{
+							byte[] data = SendBuffer.GetDeleteData(-1);
+							if (RemoteIPComboBox.SelectedItem != null)
+							{
+								TCP_Server_Send(data, (EndPoint)RemoteIPComboBox.SelectedItem);
+							}
+							else
+							{
+								for (int i = 0; i < RemoteIPComboBox.Items.Count; i++)
+								{
+									if (i < RemoteIPComboBox.Items.Count)
+									{
+										EndPoint ep = (EndPoint)RemoteIPComboBox.Items[i];
+										TCP_Server_Send(data, (EndPoint)ep);
+									}
+								}
+							}
+							SendBytes += data.Length;
+							SleepTime = 1;
+						}
+						else
+						{
+							System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+							SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message, "开启服务器失败");
+				}
+				IsOpen = false;
+				TCPServer.Close();
+				TCPServer.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void OnConnectRequest(IAsyncResult ar)
+		{
+			try
+			{
+				if (!IsOpen) return;
+				///初始化一个SOCKET，用于其它客户端的连接
+				Socket client = TCPServer.EndAccept(ar);
+				EndPoint remote = client.RemoteEndPoint;
+				///设置超时时间2s
+				client.ReceiveTimeout = 2000;
+				///将客户端点添加到哈希表中
+				clientTable.Add(remote, client);
+				///添加到combox组件
+				ComboBox_RemoteIP_Add(remote);
+				///等待新的客户端连接
+				TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+
+				
+				///服务器未关闭
+				///连接正常
+				while (IsOpen && !(client.Poll(1000, SelectMode.SelectRead) && client.Available == 0))
+				{
+					try
+					{
+						byte[] newdata = new byte[1024];
+						int lenth = client.Receive(newdata);
+						DataReceived.Invoke(newdata.Take(lenth).ToArray());
+						RecByteTemp += lenth;
+					}
+					catch { }
+				}
+				clientTable.Remove(remote);
+				ComboBox_RemoteIP_Delete(remote);
+				client.Close();
+				client.Dispose();
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message, "客户端异常");
+				//重新开始异步连接
+				//TCPServer.BeginAccept(new AsyncCallback(OnConnectRequest), TCPServer);
+			}
+		}
+
+		/// <summary>
+		/// 发送
+		/// </summary>
+		private void TCP_Server_Send(byte[] data, EndPoint ep)
+		{
+			try
+			{
+				if (ep != null && clientTable.ContainsKey(ep))
+				{
+					Socket socket = (Socket)clientTable[ep];
+					socket.SendTo(data, ep);
+				}
+			}
+			catch { }
+		}
+		#endregion
+
+		#region TCP Client
+
+		Socket TCPClient;
+		private void TCPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task connect = Task.Run(() =>
+			{
+				TCPClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				try
+				{
+					TCPClient.Connect(new IPEndPoint(address, Port));
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+					//开启发送线程
+					Task SendTask = Task.Run(() =>
+					{
+						int SleepTime = 1;
+						while (IsOpen)
+						{
+							try
+							{
+								if (SendBuffer.DataLenth() > 0)
+								{
+									byte[] data = SendBuffer.GetDeleteData(-1);
+									TCPClient.Send(data);
+									SendBytes += data.Length;
+									SleepTime = 1;
+								}
+								else
+								{
+									System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+									SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+								}
+							}
+							catch { IsOpen = false; }
+						}
+					});
+
+					TCP_ClientListenning();
+				}
+				catch (SocketException ex)
+				{
+					//System.Threading.Thread.Sleep(1000); //1s后重新访问
+					//TCPServerConnect();  //一直访问直至连接
+					MessageBox.Show(ex.Message, "连接服务器失败");
+				}
+				IsOpen = false;
+				TCPClient.Dispose();
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+		}
+
+		private void TCP_ClientListenning()
+		{
+			TCPClient.ReceiveTimeout = 2000; //设置超时时间2s
+
+			///客户端打开
+			///连接正常
+			while (IsOpen && !(TCPClient.Poll(1000, SelectMode.SelectRead) && TCPClient.Available == 0))
+			{
+				try
+				{
+					byte[] newdata = new byte[1024];
+					int lenth = TCPClient.Receive(newdata, 1024, SocketFlags.None);
+					DataReceived.Invoke(newdata.Take(lenth).ToArray());
+					RecByteTemp += lenth;
+				}
+				catch { }
+			}
+			if (IsOpen) MessageBox.Show(string.Format("与服务器 {0} 的连接已断开", TCPClient.RemoteEndPoint), "连接服务器异常");
+		}
+
+		#endregion
+
+		#region UDP
+
+		private void UDPClientConnect()
+		{
+			int Port = 0;
+			try
+			{
+				Port = int.Parse(PortBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Port输入错误");
+				return;
+			}
+
+			IPAddress address;
+			try
+			{
+				address = IPAddress.Parse(RemoteIPComboBox.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "RemoteAddress输入错误");
+				return;
+			}
+
+			BtnConnect.Text = "连接中";
+			Task task = Task.Run(() =>
+			{
+				try
+				{
+					UdpClient udpClient = new UdpClient(Port);
+					BtnConnect.Text = "断开连接";
+					IsOpen = true;
+					Running = true;
+					//开启1s定时器 更新接收速率
+					RecSpeedTimerStart();
+					//开启接收线程
+					Task RecTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							try
+							{
+								IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+								byte[] newdata = udpClient.Receive(ref ep);
+								DataReceived.Invoke(newdata);
+								RecByteTemp += newdata.Length;
+							}
+							catch { }
+						}
+					});
+
+					//开启数据处理线程
+					Task DataHandlerTask = Task.Run(() =>
+					{
+						while (IsOpen)
+						{
+							DataHandler?.Invoke(new List<object>
+							{
+								GetEncoding.Invoke(),
+								RecByteSpeed,
+								SendBytes,
+								(float)0.0F, //无上限
+                            });
+							System.Threading.Thread.Sleep(50); //20fps
+						}
+					});
+
+					int SleepTime = 1;
+					//发送循环
+					while (IsOpen)
+					{
+						try
+						{
+							if (SendBuffer.DataLenth() > 0)
+							{
+								try
+								{
+									Port = int.Parse(PortBox.Text);
+								}
+								catch (Exception ex)
+								{
+									MessageBox.Show(ex.Message, "Port输入错误");
+									continue;
+								}
+								byte[] data = SendBuffer.GetDeleteData(-1);
+								udpClient.Send(data, data.Length, new IPEndPoint(address, Port));
+								SendBytes += data.Length;
+								SleepTime = 1;
+							}
+							else
+							{
+								System.Threading.Thread.Sleep(SleepTime); //节省CPU资源
+								SleepTime = SleepTime == 100 ? SleepTime : SleepTime++;
+							}
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show(ex.Message, "Udp Send");
+						}
+					}
+					udpClient.Close();
+				}
+				catch (SocketException ex)
+				{
+					MessageBox.Show(ex.Message, "开启UDP失败");
+				}
+				IsOpen = false;
+				BtnConnect.Text = "打开连接";
+				Running = false;
+			});
+
+		}
+		#endregion
+
+		#endregion
+
+		#region 发送数据添加
+
+		/// <summary>
+		/// 清除发送数据个数记录
+		/// </summary>
+		public void ClearSendBytes()
+		{
+			SendBytes = 0;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(string buff)
+		{
+			if (IsOpen)
+			{
+				switch (GetEncoding.Invoke())
+				{
+					case 0:
+						SendBuffer.AddendData(Encoding.ASCII.GetBytes(buff));
+						break;
+					case 1:
+						SendBuffer.AddendData(Encoding.UTF8.GetBytes(buff));
+						break;
+					case 2:
+						SendBuffer.AddendData(Encoding.Unicode.GetBytes(buff));
+						break;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// 添加数据到发送队列
+		/// </summary>
+		/// <param name="buff"></param>
+		public bool AddSendBuffer(byte[] buff)
+		{
+			if (IsOpen)
+			{
+				SendBuffer.AddendData(buff);
+				return true;
+			}
+			return false;
+		}
+
+		#endregion
+
+
+		#region 本地IP地址获取
+		private void ThisIPComboBox_DropDown(object sender, EventArgs e)
+		{
+			try
+			{
+				UIComboBox box = sender as UIComboBox; //获取当前下拉框
+				string text = box.Text; 
+				box.Items.Clear();
+				box.Items.Add("Any");
+				IPAddress[] IPs = Dns.GetHostEntry(Dns.GetHostName()).AddressList; //获取本机所有IP
+				foreach (IPAddress ip in IPs)
+				{
+					if (ip.AddressFamily.ToString().Equals("InterNetwork")) box.Items.Add(ip.ToString()); //填充下拉框加入本机IP
+				}
+				box.SelectedItem = text;
+			}
+			catch (SocketException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+		#endregion
+
+
+	}
+}
+�OriginalContent��Selections���Caret��Start�
+��End��FilePath�GD:\Storage\Repo\GPT\TCP_Helper\TCP_Helper\Forms\Setting\Form_Setting.cs�Language�C#�����Value �j我应该在哪里添加 `Console.WriteLine(TXComboBox.Text);` 来查看 `TXComboBox.Text` 的实际值？��Response��Content�R你可以在 `BtnConnect_Click` 方法中的 `if` 语句之前添加 `Console.WriteLine(TXComboBox.Text);` 来查看 `TXComboBox.Text` 的实际值。这样，每次点击按钮时，都会在控制台输出 `TXComboBox.Text` 的值。
+
+这是修改后的代码：
+
+```C#
+private void BtnConnect_Click(object sender, EventArgs e)
+{
+    Console.WriteLine(TXComboBox.Text);  // 添加这行代码
+
+    if (BtnConnect.Text == "断开连接")
+    {
+        IsOpen = false;
+    }
+    else if (BtnConnect.Text == "打开连接")
+    {
+        if (TXComboBox.Text == "TCP Server")
+        {
+            TCPServerOpen();
+        }
+        else if (TXComboBox.Text == "TCP Client")
+        {
+            TCPClientConnect();
+        }
+        else if (TXComboBox.Text == "UDP")
+        {
+            UDPClientConnect();
+        }
+    }
+}
+```
+
+请注意，`Console.WriteLine` 的输出会在 Visual Studio 的 "Output" 窗口中显示，而不是在你的应用程序的用户界面中。如果你想在用户界面中显示这个值，你可能需要使用其他方法，例如 `MessageBox.Show(TXComboBox.Text);`。�Type �Status�FollowUpPrompts��=我应该在哪里查看 Visual Studio 的 "Output" 窗口？�=我如何在用户界面中显示 `TXComboBox.Text` 的值？�CodeVulnerabilities�

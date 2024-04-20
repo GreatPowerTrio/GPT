@@ -2,6 +2,14 @@
 #include "AT_cmdset.h"
 #include "main.h"
 
+/************************************************
+ * name: wifi_server_init
+ * function: 初始化WIFI模块为服务器模式
+ * input: void
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
+
 void wifi_server_init(void)
 {
     // Initialize the wifi module
@@ -16,6 +24,14 @@ void wifi_server_init(void)
     
 }
 
+/************************************************
+ * name: wifi_client_init
+ * function: 初始化WIFI模块为客户端模式
+ * input: void
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
+
 void wifi_client_init(void)
 {
     // Initialize the wifi module
@@ -28,12 +44,28 @@ void wifi_client_init(void)
 
 }
 
+/************************************************
+ * name: wifi_SCAN
+ * function: 扫描WIFI
+ * input: void
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
+
 void wifi_SCAN(void)
 {
     // Connect to the wifi network
     printf(AT_WIFI_SCAN); //扫描WIFI
 }
 
+/************************************************
+ * name: wifi_connect
+ * function: 连接WIFI
+ * input: ssid: WIFI名称
+ *        password: WIFI密码
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
 
 void wifi_connect(char* ssid, char* password)
 {
@@ -41,11 +73,29 @@ void wifi_connect(char* ssid, char* password)
     printf("AT+CWJAP=\"%s\",\"%s\"\r\n",ssid,password); //连接WIFI
 }
 
+/************************************************
+ * name: wifi_TCP_connect
+ * function: 连接TCP服务器
+ * input: ip: 服务器IP地址
+ *        port: 服务器端口
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
+
 void wifi_TCP_connect(char* ip, char* port)
 {
     // Connect to the wifi network
     printf("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n",ip,port); //连接TCP
 }
+
+/************************************************
+ * name: wifi_TCP_send
+ * function: 发送数据
+ * input: data: 发送的数据
+ *        len: 数据长度
+ * output: void
+ * notice: 需要配合串口使用
+************************************************/
 
 void wifi_send_data(uint8_t *data, uint16_t len)
 {

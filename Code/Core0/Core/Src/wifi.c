@@ -47,33 +47,29 @@ void wifi_server_init(void)
 void wifi_client_init(void)
 {
     // Initialize the wifi module
-    print_wifi("AT+RESTORE\r\n"); 
+    print_wifi("AT+RESTORE\r\n");
     delay_ms(100);
-    print_wifi("AT\r\n");              // 检测设备是否在线
-    delay_ms(100);
-    print_wifi("AT+RST\r\n");               // 让Wifi模块重启的命令
-    delay_ms(100);
-    print_wifi("AT+CWMODE=3\r\n");               // 获取固件版本号
-    delay_ms(100);
-    print_wifi("AT+RST\r\n");            // 获取系统信息
-    delay_ms(100);
-      print_wifi("AT+UART=115200,8,1,0,0\r\n"); // 设置波特率
-       delay_ms(100);
-    print_wifi("AT+CWLAP\r\n"); // 设置WIFI模式
-    delay_ms(100);
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");               // 让Wifi模块重启的命令
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    // print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
-    print_wifi("AT+CWJAP=\"GPTT\",\"12345678999\"\r\n");
-    delay_ms(100);
+  print_wifi("AT+RST\r\n");
+  delay_ms(100);
+  print_wifi("AT+CWMODE=1\r\n");
+  delay_ms(100);
+  print_wifi("AT+RST\r\n");
+  delay_ms(100);
+  print_wifi("AT+UART=115200,8,1,0,0\r\n");
+  delay_ms(100);
+   //print_wifi("AT+CWSAP=\"esp8266\",\"123456789999\",1,3\r\n");
+  delay_ms(100);
+   print_wifi("AT+CWJAP=\"GPTT\",\"12345678999\"\r\n");
+   delay_ms(100);
+  print_wifi("AT+CIPMUX=0\r\n");
+  delay_ms(100);
+  //print_wifi("AT+CIPSERVER=1,8080\r\n");
+  delay_ms(100);
+  // print_wifi("AT+CIPSTART=\"TCP\",\"172.27.16.1\",8080\r\n");
+  delay_ms(100);
+  print_wifi("AT+CIPSTO=500\r\n");
+  delay_ms(100);      
+  print_wifi("AT+CIFSR\r\n");
 }
 
 /************************************************
@@ -87,13 +83,22 @@ void wifi_client_init(void)
 void wifi_client_send(uint16_t *data, uint8_t len)
 {
     // Connect to the wifi network
-    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.137.1\", 8080\r\n"); // 连接TCP
-    print_wifi("AT+CIPSEND=0,%d\r\n", len); // 发送数据
+    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.66.28\", 8080\r\n"); // 连接TCP
+    delay_ms(100);
+    print_wifi("AT+CIPMODE=1\r\n");
+    delay_ms(100);
+    print_wifi("AT+CIPSEND\r\n");
+    delay_ms(100);
+    // print_wifi("AT+CIPSEND=0,%d\r\n", len); // 发送数据
+    delay_ms(100);
+    print_wifi("HELLO\r\n ");
     for(int i = 0; i < len; i++)
     {
         print_wifi("%u", data[i]); // 发送数据
     }
     print_wifi("\r\n"); // 发送结束符
+    delay_ms(100);
+    print_wifi("AT+CIPCLOSE\r\n");
 }
 /************************************************
  * name: wifi_AP_init

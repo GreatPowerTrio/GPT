@@ -39,6 +39,6 @@
 "core0\heap_4.o"
 "core0\port.o"
 --strict --scatter "Core0\Core0.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "Core0.map" -o Core0\Core0.axf

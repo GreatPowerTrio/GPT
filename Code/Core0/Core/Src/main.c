@@ -47,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char u_buf[32];
+char u_buf[100];
 uint32_t adc_data;
 /* USER CODE END PV */
 

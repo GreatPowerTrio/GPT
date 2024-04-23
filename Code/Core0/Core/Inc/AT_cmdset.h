@@ -25,6 +25,7 @@ https://github.com/CQUPTLei/ESP8266
 #define AT_WIFI_IP "AT+CIPSTA?\r\n" //查询IP地址
 #define AT_WIFI_TRANSMISSION_MODE "AT+CIPMODE=1\r\n" //设置透传模式
 #define AT_WIFI_SERVER "AT+CIPSERVER=1,8080\r\n" //开启服务器
-#define AT_WIFI_SET "AT+CWSAP=\"ESP8266\",\"123456789\",1,4\r\n" //设置WIFI
-
+#define AT_WIFI_SET "AT+CWSAP=\"ESP8266\",\"123456789\"\r\n" //设置WIFI
+#define AT_WIFI_BOUND "AT+UART=115200,8,1,0,0\r\n" //设置波特率
+    
 # endif

@@ -3,6 +3,7 @@
     "main.h": "c",
     "freertos.h": "c",
     "spi.h": "c",
-    "cmsis_os.h": "c"
+    "cmsis_os.h": "c",
+    "wifi.h": "c"
   }
 }

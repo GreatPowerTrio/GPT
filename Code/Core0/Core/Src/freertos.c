@@ -45,7 +45,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
-extern char u_buf[32];
+extern char u_buf[100];
+char rx_buf[100];
 extern uint32_t adc_data;
 
 /* USER CODE END Variables */
@@ -61,7 +62,7 @@ osThreadId_t myTask02Handle;
 const osThreadAttr_t myTask02_attributes = {
   .name = "myTask02",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityAboveNormal,
 };
 /* Definitions for C2CTask */
 osThreadId_t C2CTaskHandle;
@@ -124,7 +125,7 @@ void MX_FREERTOS_Init(void) {
   myTask02Handle = osThreadNew(StartTask02, NULL, &myTask02_attributes);
 
   /* creation of C2CTask */
-  C2CTaskHandle = osThreadNew(StartC2CTask, NULL, &C2CTask_attributes);
+  // C2CTaskHandle = osThreadNew(StartC2CTask, NULL, &C2CTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -150,7 +151,10 @@ void StartTask01(void *argument)
   for(;;)
   {
 		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    osDelay(500);
+    osMutexAcquire(C2CMutexHandle, portMAX_DELAY);
+    wifi_client_send((uint16_t*)"hello", 5);
+    osMutexRelease(C2CMutexHandle);   
+    osDelay(100);
   }                                       
   /* USER CODE END StartTask01 */
 }
@@ -168,7 +172,38 @@ void StartTask02(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    //wifi_server_init();
+    //wifi_SCAN();
+    // wifi_connect("GPTT", "12345678999");
+    // wifi_AP_init();
+   wifi_client_init();
+  // print_wifi("AT+RST\r\n");
+  // delay_ms(100);
+  // print_wifi("AT+CWMODE=3\r\n");
+  // delay_ms(100);
+  // print_wifi("AT+RST\r\n");
+  // delay_ms(100);
+  // print_wifi("AT+UART=115200,8,1,0,0\r\n");
+  // delay_ms(100);
+  //  print_wifi("AT+CWSAP=\"esp8266\",\"123456789999\",1,3\r\n");
+  // delay_ms(100);
+  //  print_wifi("AT+CWJAP=\"GPTTT\",\"12345678999\"\r\n");
+  //  delay_ms(100);
+  // print_wifi("AT+CIPMUX=0\r\n");
+  // delay_ms(100);
+  // print_wifi("AT+CIPSERVER=1,8080\r\n");
+  // delay_ms(100);
+  // // print_wifi("AT+CIPSTART=\"TCP\",\"172.27.16.1\",8080\r\n");
+  // delay_ms(100);
+  // print_wifi("AT+CIPSTO=500\r\n");
+  // delay_ms(100);      
+  // print_wifi("AT+CIFSR\r\n");
+
+    
+
+  //print_wifi("AT+UART=115200,8,1,0,0\r\n");
+  //print_wifi("AT+CWSAP=\"ESP8266\",\"12345678\",11,0\r\n");
+    vTaskDelete(NULL);
   }
   /* USER CODE END StartTask02 */
 }
@@ -188,14 +223,13 @@ void StartC2CTask(void *argument)
   {
     osMutexAcquire(C2CMutexHandle, portMAX_DELAY);
 
-    C2C_Write_Uint16(adc_data);
-    print("%d\r\n", adc_data);
-
+    HAL_UART_Receive(&huart1, (uint8_t *)rx_buf, 2, 100);
+    print("%s\r\n", rx_buf);
     osMutexRelease(C2CMutexHandle);
 
     osDelay(10);  
     
-    }
+  }
   /* USER CODE END StartC2CTask */
 }
 

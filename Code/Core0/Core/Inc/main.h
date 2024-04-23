@@ -75,6 +75,7 @@ void Error_Handler(void);
 #include "stdio.h"
 #include "usart.h"
 #include "spi.h"
+#include "wifi.h"
 #define print(...)            HAL_UART_Transmit(&huart1,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
 #define print_wifi(...)       HAL_UART_Transmit(&huart2,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
 

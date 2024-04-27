@@ -4,6 +4,10 @@
     "freertos.h": "c",
     "spi.h": "c",
     "cmsis_os.h": "c",
-    "wifi.h": "c"
+    "filter.h": "c",
+    "dma.h": "c",
+    "at_cmdset.h": "c",
+    "usart.h": "c",
+    "gpio.h": "c"
   }
 }

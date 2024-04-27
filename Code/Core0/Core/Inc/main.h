@@ -31,7 +31,15 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdbool.h"
+#include "filter.h"
+#include "math.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "stdio.h"
+#include "usart.h"
+#include "spi.h"
+#include "wifi.h"
 
 /* USER CODE END Includes */
 
@@ -70,12 +78,14 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOA
 #define ECG_LEAD_OFF_Pin GPIO_PIN_3
 #define ECG_LEAD_OFF_GPIO_Port GPIOB
+#define LEAD_OFF_Pin GPIO_PIN_4
+#define LEAD_OFF_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-#include "stdio.h"
-#include "usart.h"
-#include "spi.h"
-#include "wifi.h"
+
+#define PRINT_BUF_SIZE 100
+
+
 #define print(...)            HAL_UART_Transmit(&huart1,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
 #define print_wifi(...)       HAL_UART_Transmit(&huart2,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
 

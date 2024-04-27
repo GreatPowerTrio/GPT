@@ -47,8 +47,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char u_buf[100];
+
+char u_buf[PRINT_BUF_SIZE];
+uint8_t rec_data;
 uint32_t adc_data;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,6 +100,9 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	HAL_ADC_Start_DMA(&hadc1, &adc_data, 1);
+
+  HAL_UART_Receive_IT(&huart1, &rec_data, 1);
+  HAL_UART_Receive_IT(&huart2, &rec_data, 1);
   /* USER CODE END 2 */
 
   /* Init scheduler */

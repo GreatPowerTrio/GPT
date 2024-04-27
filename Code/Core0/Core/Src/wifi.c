@@ -3,7 +3,7 @@
 #include "main.h"
 
 extern UART_HandleTypeDef huart2;
-// å»¶æ—¶ms
+// ÑÓÊ±ms
 void delay_ms(uint32_t ms)
 {
     for (uint32_t i = 0; i < ms; i++)
@@ -17,38 +17,38 @@ void delay_ms(uint32_t ms)
 
 /************************************************
  * name: wifi_server_init
- * function: åˆå§‹åŒ–WIFIæ¨¡å—ä¸ºæœåŠ¡å™¨æ¨¡å¼
+ * function: ³õÊ¼»¯WIFIÄ£¿éÎª·þÎñÆ÷Ä£Ê½
  * input: void
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 extern char u_buf[100];
 void wifi_server_init(void)
 {
     // Initialize the wifi module
-    print_wifi(AT_Test);             // æ£€æµ‹è®¾å¤‡æ˜¯å¦åœ¨çº¿
-    print_wifi(AT_RST);              // è®©Wifiæ¨¡å—é‡å¯çš„å‘½ä»¤
-    print_wifi(AT_GMR);              // èŽ·å–å›ºä»¶ç‰ˆæœ¬å·
-    print_wifi(AT_SYSMSG);           // èŽ·å–ç³»ç»Ÿä¿¡æ¯
-    print_wifi(AT_WIFI_MODE_SOFTAP); // è®¾ç½®WIFIæ¨¡å¼
-    print_wifi(AT_RST);              // è®©Wifiæ¨¡å—é‡å¯çš„å‘½ä»¤
-    print_wifi(AT_WIFI_SET);         // è®¾ç½®WIFI
-    print_wifi(AT_WIFI_SERVER);      // å¼€å¯æœåŠ¡å™¨
+    print_wifi(AT_Test);             // ¼ì²âÉè±¸ÊÇ·ñÔÚÏß
+    print_wifi(AT_RST);              // ÈÃWifiÄ£¿éÖØÆôµÄÃüÁî
+    print_wifi(AT_GMR);              // »ñÈ¡¹Ì¼þ°æ±¾ºÅ
+    print_wifi(AT_SYSMSG);           // »ñÈ¡ÏµÍ³ÐÅÏ¢
+    print_wifi(AT_WIFI_MODE_SOFTAP); // ÉèÖÃWIFIÄ£Ê½
+    print_wifi(AT_RST);              // ÈÃWifiÄ£¿éÖØÆôµÄÃüÁî
+    print_wifi(AT_WIFI_SET);         // ÉèÖÃWIFI
+    print_wifi(AT_WIFI_SERVER);      // ¿ªÆô·þÎñÆ÷
 }
 
 /************************************************
  * name: wifi_client_init
- * function: åˆå§‹åŒ–WIFIæ¨¡å—ä¸ºå®¢æˆ·ç«¯æ¨¡å¼
+ * function: ³õÊ¼»¯WIFIÄ£¿éÎª¿Í»§¶ËÄ£Ê½
  * input: void
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_client_init(void)
 {
     // Initialize the wifi module
-    print_wifi("AT+RESTORE\r\n");
-    delay_ms(100);
+  print_wifi("AT+RESTORE\r\n");
+  delay_ms(100);
   print_wifi("AT+RST\r\n");
   delay_ms(100);
   print_wifi("AT+CWMODE=1\r\n");
@@ -74,131 +74,131 @@ void wifi_client_init(void)
 
 /************************************************
  * name: wifi_client_send
- * function: å‘é€æ•°æ®
- * input: data: å‘é€çš„æ•°æ®
- *        len: æ•°æ®é•¿åº¦
+ * function: ·¢ËÍÊý¾Ý
+ * input: data: ·¢ËÍµÄÊý¾Ý
+ *        len: Êý¾Ý³¤¶È
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 void wifi_client_send(uint16_t *data, uint8_t len)
 {
     // Connect to the wifi network
-    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.66.28\", 8080\r\n"); // è¿žæŽ¥TCP
+    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.66.28\", 8080\r\n"); // Á¬½ÓTCP
     delay_ms(100);
     print_wifi("AT+CIPMODE=1\r\n");
     delay_ms(100);
     print_wifi("AT+CIPSEND\r\n");
     delay_ms(100);
-    // print_wifi("AT+CIPSEND=0,%d\r\n", len); // å‘é€æ•°æ®
+    // print_wifi("AT+CIPSEND=0,%d\r\n", len); // ·¢ËÍÊý¾Ý
     delay_ms(100);
     print_wifi("HELLO\r\n ");
     for(int i = 0; i < len; i++)
     {
-        print_wifi("%u", data[i]); // å‘é€æ•°æ®
+        print_wifi("%u", data[i]); // ·¢ËÍÊý¾Ý
     }
-    print_wifi("\r\n"); // å‘é€ç»“æŸç¬¦
+    print_wifi("\r\n"); // ·¢ËÍ½áÊø·û
     delay_ms(100);
     print_wifi("AT+CIPCLOSE\r\n");
 }
 /************************************************
  * name: wifi_AP_init
- * function: åˆå§‹åŒ–WIFIæ¨¡å—ä¸ºAPæ¨¡å¼(çƒ­ç‚¹æ¨¡å¼)
+ * function: ³õÊ¼»¯WIFIÄ£¿éÎªAPÄ£Ê½(ÈÈµãÄ£Ê½)
  * input: void
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_AP_init(void)
 {
     // Initialize the wifi module
-    print_wifi("AT\r\n"); // æ£€æµ‹è®¾å¤‡æ˜¯å¦åœ¨çº¿
+    print_wifi("AT\r\n"); // ¼ì²âÉè±¸ÊÇ·ñÔÚÏß
     delay_ms(100);
-    print_wifi("AT+RST\r\n"); // è®©Wifiæ¨¡å—é‡å¯çš„å‘½ä»¤
+    print_wifi("AT+RST\r\n"); // ÈÃWifiÄ£¿éÖØÆôµÄÃüÁî
     delay_ms(100);
-    print_wifi("AT+GMR\r\n"); // èŽ·å–å›ºä»¶ç‰ˆæœ¬å·
+    print_wifi("AT+GMR\r\n"); // »ñÈ¡¹Ì¼þ°æ±¾ºÅ
     delay_ms(100);
-    print_wifi("AT+SYSMSG\r\n"); // èŽ·å–ç³»ç»Ÿä¿¡æ¯
+    print_wifi("AT+SYSMSG\r\n"); // »ñÈ¡ÏµÍ³ÐÅÏ¢
     delay_ms(100);
-    print_wifi("AT+CWMODE=2\r\n"); // è®¾ç½®WIFIæ¨¡å¼
+    print_wifi("AT+CWMODE=2\r\n"); // ÉèÖÃWIFIÄ£Ê½
     delay_ms(100);
-    print_wifi("AT+CWSAP=\"ESP8266\",\"123456789\"\r\n"); // è®¾ç½®WIFI
+    print_wifi("AT+CWSAP=\"ESP8266\",\"123456789\"\r\n"); // ÉèÖÃWIFI
     delay_ms(100);
-    print_wifi("AT+CIPMUX=1\r\n"); // è®¾ç½®å¤šè¿žæŽ¥
+    print_wifi("AT+CIPMUX=1\r\n"); // ÉèÖÃ¶àÁ¬½Ó
     delay_ms(100);
-    print_wifi("AT+CIPSERVER=1,8080\r\n"); // å¼€å¯æœåŠ¡å™¨
+    print_wifi("AT+CIPSERVER=1,8080\r\n"); // ¿ªÆô·þÎñÆ÷
     delay_ms(100);
-    print_wifi("AT+CIPSTO=500\r\n"); // è®¾ç½®è¶…æ—¶æ—¶é—´
+    print_wifi("AT+CIPSTO=500\r\n"); // ÉèÖÃ³¬Ê±Ê±¼ä
     delay_ms(100);
-    print_wifi("AT+UART=115200,8,1,0,0\r\n"); // è®¾ç½®æ³¢ç‰¹çŽ‡
+    print_wifi("AT+UART=115200,8,1,0,0\r\n"); // ÉèÖÃ²¨ÌØÂÊ
     delay_ms(100);
 
-    // print_wifi(AT_RST); //è®©Wifiæ¨¡å—é‡å¯çš„å‘½ä»¤
-    // print_wifi(AT_WIFI_SET); //è®¾ç½®WIFI
-    // print_wifi(AT_WIFI_SERVER); //å¼€å¯æœåŠ¡å™¨
+    // print_wifi(AT_RST); //ÈÃWifiÄ£¿éÖØÆôµÄÃüÁî
+    // print_wifi(AT_WIFI_SET); //ÉèÖÃWIFI
+    // print_wifi(AT_WIFI_SERVER); //¿ªÆô·þÎñÆ÷
 }
 
 /************************************************
  * name: wifi_SCAN
- * function: æ‰«æWIFI
+ * function: É¨ÃèWIFI
  * input: void
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_SCAN(void)
 {
     // Connect to the wifi network
-    print_wifi(AT_WIFI_SCAN); // æ‰«æWIFI
+    print_wifi(AT_WIFI_SCAN); // É¨ÃèWIFI
 }
 
 /************************************************
  * name: wifi_connect
- * function: è¿žæŽ¥WIFI
- * input: ssid: WIFIåç§°
- *        password: WIFIå¯†ç 
+ * function: Á¬½ÓWIFI
+ * input: ssid: WIFIÃû³Æ
+ *        password: WIFIÃÜÂë
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_connect(char *ssid, char *password)
 {
     // Connect to the wifi network
-    print_wifi("AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password); // è¿žæŽ¥WIFI
+    print_wifi("AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password); // Á¬½ÓWIFI
 }
 
 /************************************************
  * name: wifi_TCP_connect
- * function: è¿žæŽ¥TCPæœåŠ¡å™¨
- * input: ip: æœåŠ¡å™¨IPåœ°å€
- *        port: æœåŠ¡å™¨ç«¯å£
+ * function: Á¬½ÓTCP·þÎñÆ÷
+ * input: ip: ·þÎñÆ÷IPµØÖ·
+ *        port: ·þÎñÆ÷¶Ë¿Ú
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_TCP_connect(char *ip, char *port)
 {
     // Connect to the wifi network
-    print_wifi("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n", ip, port); // è¿žæŽ¥TCP
+    print_wifi("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n", ip, port); // Á¬½ÓTCP
 }
 
 /************************************************
  * name: wifi_TCP_send
- * function: å‘é€æ•°æ®
- * input: data: å‘é€çš„æ•°æ®
- *        len: æ•°æ®é•¿åº¦
+ * function: ·¢ËÍÊý¾Ý
+ * input: data: ·¢ËÍµÄÊý¾Ý
+ *        len: Êý¾Ý³¤¶È
  * output: void
- * notice: éœ€è¦é…åˆä¸²å£ä½¿ç”¨
+ * notice: ÐèÒªÅäºÏ´®¿ÚÊ¹ÓÃ
  ************************************************/
 
 void wifi_send_data(unsigned char *data, unsigned int len)
 {
     // Send data over wifi
-    print_wifi("AT+CIPSEND=0,%d\r\n", len); // å‘é€æ•°æ®
-    // å¯èƒ½éœ€è¦å»¶è¿Ÿ
+    print_wifi("AT+CIPSEND=0,%d\r\n", len); // ·¢ËÍÊý¾Ý
+    // ¿ÉÄÜÐèÒªÑÓ³Ù
     for (int i = 0; i < len; i++)
     {
-        print_wifi("%u", data[i]); // å‘é€æ•°æ®
+        print_wifi("%u", data[i]); // ·¢ËÍÊý¾Ý
     }
-    print_wifi("\r\n"); // å‘é€ç»“æŸç¬¦
+    print_wifi("\r\n"); // ·¢ËÍ½áÊø·û
 }
 

@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,38 +17,16 @@ namespace TCP_Helper.Forms.Chart
 {
 	public partial class Form_Chart : Form
 	{
-		private bool ShowAllFlag = true;
-		private bool FormHadShown = false; //窗体是否已经展示；窗体显示后方能更新数据
-
-		private readonly DataBuffer buffer = new DataBuffer(); //数据接收缓存
-
 		
-		static int LinesNum = 0;
-		static int PointsNum = 201; //初始采样点个数
-		static int XGridNumber = 10;
-		static int YGridNumber = 5;
-		private Timer TimerShow = new Timer(); //定时刷新图像
+		private readonly DataBuffer buffer = new DataBuffer(); //数据接收缓存
+        private Queue<double> dataQueue = new Queue<double>(100);
 
-		public List<List<float>> DataValues = new List<List<float>>(); //接收数据存储
+        private int curValue = 0;
+        private double[] resultDouble;
+        private int num = 1;//每次删除增加几个点
+		
 
-		private List<List<float>> Yaxis = new List<List<float>>(); //Y轴队列
-		private List<int> Xaxis = new List<int>(); //X轴队列
-		private List<Label> LineLabel = new List<Label>(); //线条提示label
-		private RectangleF SlidingRect = new RectangleF(0, 0, 0, 0); //当前滑动显示区域
-		public List<bool> LineEnable = new List<bool>(); //线条是否显示
-		private bool XaxisAuto = true; //X轴自动更新
-		private int YaxisAuto = 1; //Y轴自动更新 0无极值点 1极值点保存 2实时极值点
-		private bool SpecialUpdate = false; //特殊更新标志位
-		private bool ClearFlag = false; //清除标志位
-		private RectangleF LastSlidingRect = new RectangleF(0, 0, -1, 0); //保存上一次滑动窗位置
-		private List<float> ExtremeValue = new List<float>(); //极值点
-
-		//线条颜色
-		private Color x_Color = Color.FromArgb(255, 0, 0);
-		private Color y_Color = Color.FromArgb(0, 255, 0);
-        private Color wave_color = Color.FromArgb(0, 0, 255);
-
-		public Form_Chart()
+        public Form_Chart()
 		{
 			InitializeComponent();
 			//双缓存区
@@ -71,58 +50,86 @@ namespace TCP_Helper.Forms.Chart
 			#endregion
 
 			#region 图表初始化
-			//线段初始化
-			chart.Series.Clear();
-			LineEnable.Add(true);
-			DataValues.Add(new List<float>());
-			Yaxis.Add(new List<float>());
-			LineLabel.Add(new Label()
-			{
-				Parent = chart,
-				Visible = false,
-				BackColor = Color.Red,
-				ForeColor = Color.Blue,
-			});
-
-
-			//标签初始化
-			for (int i = 0; i <= PointsNum; i += 2 * (PointsNum / XGridNumber))
-			{
-				chart.ChartAreas[0].AxisX.CustomLabels.Add(new CustomLabel());
-			}
-
-			//部分属性初始化
+			this.chart.ChartAreas.Clear();
+			ChartArea chartArea1 = new ChartArea("C1");
+			this.chart.ChartAreas.Add(chartArea1);
 			
-			chart.ChartAreas[0].AxisX.LabelStyle.Angle = 0;
-			chart.ChartAreas[0].AxisX.LabelStyle.Font = new Font("Microsoft Sans Serif", 8);
-			chart.ChartAreas[0].AxisX.LineColor = x_Color;
-			chart.ChartAreas[0].AxisX.Minimum = -1;
-			chart.ChartAreas[0].AxisX.Interval = 1;
-			chart.ChartAreas[0].AxisY.LabelStyle.Font = new Font("Microsoft Sans Serif", 8);
-			chart.ChartAreas[0].AxisY.LineColor = y_Color;
-			chart.ChartAreas[0].InnerPlotPosition.Height = 95;
-			chart.ChartAreas[0].InnerPlotPosition.Width = 100;
-			chart.ChartAreas[0].InnerPlotPosition.X = 6;
-			chart.ChartAreas[0].InnerPlotPosition.Y = 0;
-			SlidingRect.Y = LastSlidingRect.Y = 1.0f;
-			SlidingRect.Height = LastSlidingRect.Height = 2.0f;
-			#endregion
-		}
+			this.chart.Series.Clear();
+			Series series1 = new Series("S1");
+			series1.ChartArea = "C1";
+			this.chart.Series.Add(series1);
 
-		public void DataReceived(byte[] data)
+			this.chart.ChartAreas[0].AxisY.Minimum = 0;
+			this.chart.ChartAreas[0].AxisY.Maximum = 4096;
+			this.chart.ChartAreas[0].AxisX.Interval = 10;
+
+			this.chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+			this.chart.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.Silver;
+
+			this.chart.Titles.Clear();
+            this.chart.Titles.Add("S1");
+            this.chart.Titles[0].Text = "XXX显示";
+            this.chart.Titles[0].ForeColor = Color.RoyalBlue;
+            this.chart.Titles[0].Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+
+            this.chart.Series[0].Color = Color.Red;
+
+            this.chart.Titles[0].Text = string.Format("XXX\"波形\"显示");
+            this.chart.Series[0].ChartType = SeriesChartType.Line;
+            this.chart.Series[0].Points.Clear();
+        }
+
+
+        #endregion
+
+        private int tick = 0;
+        string resultStr = null;
+        public void DataReceived(byte[] data)
 		{
 			buffer.AddendData(data);
 			var newdata = buffer.GetDeleteData(-1);
-			DebugBox_Add(newdata);
-			ChartLinesShow();
-			var datas = Unpack(newdata); //如果传输数据有打包则需要解包
-										 //波形数据更新
-			foreach (var nums in datas)
+            if (tick < num)
 			{
-				AppendData(nums);
-
+				resultStr += System.Text.Encoding.ASCII.GetString(data) + ",";
+				tick++;
 			}
-		}
+			else 
+			{
+                string[] resultStrArray = resultStr.Split(",".ToCharArray());
+                //resultDouble = Array.ConvertAll<string, double>(resultStrArray, s => double.Parse(s));
+                resultDouble = Array.ConvertAll<string, double>(resultStrArray, s =>
+                {
+                    double value;
+                    if (double.TryParse(s, out value))
+                        return value;
+                    else
+                        return 0;  // or any other value you want to use for invalid strings
+                });
+                for (int i = 0; i < resultStrArray.Length; i++)
+
+                    DebugBox.Invoke(new Action(() =>
+                    {
+                        DebugBox.AppendText(resultStrArray[i] + " ");
+
+                    }));
+                // DebugBox_Add(newdata);
+                tick = 0;
+				resultStr = null;
+                this.chart.Invoke((Action)(() =>
+                {
+                    UpdateQueueValue();
+                    this.chart.Series[0].Points.Clear();
+                    for (int i = 0; i < dataQueue.Count; i++)
+                    {
+                        this.chart.Series[0].Points.AddXY((i + 1), dataQueue.ElementAt(i));
+                    }
+                }));
+            }
+            
+
+
+
+        }
 
 		public void DataHandler(List<object> arg)
 		{
@@ -145,8 +152,9 @@ namespace TCP_Helper.Forms.Chart
 		{
 			DebugBox.Invoke(new Action(() =>
 			{
-				DebugBox.AppendText(BitConverter.ToString(data) + "\r\n");
-			}));	
+				DebugBox.AppendText("-" + Encoding.ASCII.GetString(data));
+
+            }));	
 		}
 		#region 数据解包
 		//帧头  帧尾
@@ -295,78 +303,65 @@ namespace TCP_Helper.Forms.Chart
 		/// <param name="newdata"></param>
 		public void AppendData(List<float> newdata)
 		{
-			if (!FormHadShown || newdata.Count == 0) return;
-			if (LinesNum == 0) LinesNum = newdata.Count; //初次设置线条数
-			if (newdata.Count == LinesNum && LinesNum != 0)
-			{
-				for (int index = 0; index < LinesNum; index++)
-				{
-					DataValues[index].Add(newdata[index]);
-				}
-			}
-			else //监测到数据个数不一致，则清空数据并重新绘制
-			{
-				//Clear();
-				return;
-			}
-
-/*			Action_DataEvent?.Invoke(newdata);*/
+			
 		}
 
 		#endregion
 
 		#region 图表绘制
 
-		private void ChartLinesShow()
-		{
-			if (chart.InvokeRequired)
-			{
-				Action action = ChartLinesShow;
-				chart.Invoke(action);
-			/*}
-			else
-			{*/
-				chart.Series.Clear();
-
-				//图表范围更新
-				chart.ChartAreas[0].AxisX.Maximum = (Xaxis.Count < PointsNum || ShowAllFlag) && DataValues[0].Count > PointsNum ? Xaxis.Count : PointsNum;
-				chart.ChartAreas[0].AxisX.MajorGrid.Interval = chart.ChartAreas[0].AxisX.Maximum / XGridNumber;
-				chart.ChartAreas[0].AxisX.MajorTickMark.Interval = chart.ChartAreas[0].AxisX.Maximum / XGridNumber;
-
-				chart.ChartAreas[0].AxisY.Maximum = SlidingRect.Height != 0 ? SlidingRect.Y : SlidingRect.Y + 0.5F;
-				chart.ChartAreas[0].AxisY.Minimum = SlidingRect.Height != 0 ? SlidingRect.Y - SlidingRect.Height : SlidingRect.Y - 0.5F;
-				chart.ChartAreas[0].AxisY.MajorGrid.Interval = SlidingRect.Height / YGridNumber;
-				chart.ChartAreas[0].AxisY.MajorTickMark.Interval = SlidingRect.Height / YGridNumber;
-
-				//横坐标标签更新
-				for (int i = 1; i < chart.ChartAreas[0].AxisX.CustomLabels.Count; i++)
-				{
-					chart.ChartAreas[0].AxisX.CustomLabels[i].FromPosition = 4 * i * chart.ChartAreas[0].AxisX.Maximum / XGridNumber;
-					chart.ChartAreas[0].AxisX.CustomLabels[i].Text = ((int)(SlidingRect.X + 2 * i * (DataValues[0].Count > PointsNum ? SlidingRect.Width : PointsNum) / XGridNumber)).ToString();
-				}
-
-				//曲线更新
-				for (int yindex = 0; yindex < LinesNum; yindex++)
-				{
-					if (!LineEnable[yindex]) continue;
-					Series line = new Series
-					{
-						//波形样式
-						MarkerStyle = ShowAllFlag ? MarkerStyle.None : MarkerStyle.Circle,
-						MarkerSize = 3,
-						MarkerStep = 1,
-						ChartType = SeriesChartType.Line,
-						BorderWidth = 2,
-						Color = wave_color,
-						IsXValueIndexed = true, //硬件加速
-					};
-					line.Points.DataBindXY(Xaxis.GetRange(0, Yaxis[yindex].Count), Yaxis[yindex]);
-					chart.Series.Add(line);
-				}
-			}
-		}
 
 		#endregion
 
-	}
+		private void Chart_Btn_Click(object sender, EventArgs e)
+		{
+			if (Chart_Btn.Text == "启动")
+			{
+				this.timer1.Start();
+				Chart_Btn.Text = "关闭";
+			}
+			else 
+			{
+				this.timer1.Stop();
+				Chart_Btn.Text = "启动";
+            }
+		}
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            
+			/*UpdateQueueValue();
+            this.chart.Series[0].Points.Clear();
+            for (int i = 0; i < dataQueue.Count; i++)
+            {
+                this.chart.Series[0].Points.AddXY((i + 1), dataQueue.ElementAt(i));
+            }*/
+        }
+
+		private void UpdateQueueValue()
+		{
+
+			if (dataQueue.Count > 100)
+			{
+				//先出列
+				for (int i = 0; i < num; i++)
+				{
+					dataQueue.Dequeue();
+				}
+			}
+
+			/* Random r = new Random();
+             for (int i = 0; i < num; i++)
+             {
+                 dataQueue.Enqueue(r.Next(0, 100));
+             }*/
+			 
+             for (int i = 0; i < num; i++)
+             {
+
+				dataQueue.Enqueue(resultDouble[i]);
+             }
+
+        }
+    }
 }

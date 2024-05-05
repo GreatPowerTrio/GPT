@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Storage\\Repo\\C_sharp_Learning\\wifi_try\\Project\\Project.csproj": {}
+    "D:\\Storage\\Repo\\GPT\\Test\\winform_wifi_try\\Project\\Project.csproj": {}
   },
   "projects": {
-    "D:\\Storage\\Repo\\C_sharp_Learning\\wifi_try\\Project\\Project.csproj": {
+    "D:\\Storage\\Repo\\GPT\\Test\\winform_wifi_try\\Project\\Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Storage\\Repo\\C_sharp_Learning\\wifi_try\\Project\\Project.csproj",
+        "projectUniqueName": "D:\\Storage\\Repo\\GPT\\Test\\winform_wifi_try\\Project\\Project.csproj",
         "projectName": "Project",
-        "projectPath": "D:\\Storage\\Repo\\C_sharp_Learning\\wifi_try\\Project\\Project.csproj",
+        "projectPath": "D:\\Storage\\Repo\\GPT\\Test\\winform_wifi_try\\Project\\Project.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Storage\\Repo\\C_sharp_Learning\\wifi_try\\Project\\obj\\",
+        "outputPath": "D:\\Storage\\Repo\\GPT\\Test\\winform_wifi_try\\Project\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -63,7 +63,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

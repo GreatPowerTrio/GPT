@@ -395,6 +395,11 @@
               <FilePath>..\Core\Src\wifi.c</FilePath>
             </File>
             <File>
+              <FileName>filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\filter.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>

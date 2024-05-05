@@ -56,9 +56,14 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
+
+extern char u_buf[PRINT_BUF_SIZE];
+extern uint8_t rec_data;
 
 /* USER CODE END EV */
 
@@ -175,6 +180,34 @@ void DMA1_Channel1_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart2);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt.
   */
 void TIM6_IRQHandler(void)
@@ -189,5 +222,34 @@ void TIM6_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart->Instance == USART2)
+  {
+    // Send to PC
+    HAL_UART_Transmit(&huart1, &rec_data, 1, 0);
+
+    HAL_UART_Receive_IT(&huart1, &rec_data, 1);
+    HAL_UART_Receive_IT(&huart2, &rec_data, 1);
+  }
+
+
+  // PC send to stm32
+  if(huart->Instance == USART1)
+  {
+    // Send back to PC
+    // HAL_UART_Transmit(&huart1, &rec_data, 1, 0);
+    
+    // Send to ESP8266
+    HAL_UART_Transmit(&huart2, &rec_data, 1, 0);
+
+
+    if(rec_data == '\n')
+      HAL_UART_Receive_IT(&huart2, &rec_data, 1);
+    else
+      HAL_UART_Receive_IT(&huart1, &rec_data, 1);
+  }
+}
 
 /* USER CODE END 1 */

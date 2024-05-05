@@ -2,116 +2,203 @@
 #include "AT_cmdset.h"
 #include "main.h"
 
+extern UART_HandleTypeDef huart2;
+// —” ±ms
+void delay_ms(uint32_t ms)
+{
+    for (uint32_t i = 0; i < ms; i++)
+    {
+        for (uint32_t j = 0; j < 1000; j++)
+        {
+            // Software delay loop
+        }
+    }
+}
+
 /************************************************
  * name: wifi_server_init
- * function: ÂàùÂßãÂåñWIFIÊ®°Âùó‰∏∫ÊúçÂä°Âô®Ê®°Âºè
+ * function: ≥ı ºªØWIFIƒ£øÈŒ™∑˛ŒÒ∆˜ƒ£ Ω
  * input: void
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
-
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
+extern char u_buf[100];
 void wifi_server_init(void)
 {
     // Initialize the wifi module
-    printf(AT_Test); //Ê£ÄÊµãËÆæÂ§áÊòØÂê¶Âú®Á∫ø
-    printf(AT_RST); //ËÆ©WifiÊ®°ÂùóÈáçÂêØÁöÑÂëΩ‰ª§
-    printf(AT_GMR); //Ëé∑ÂèñÂõ∫‰ª∂ÁâàÊú¨Âè∑
-    printf(AT_SYSMSG); //Ëé∑ÂèñÁ≥ªÁªü‰ø°ÊÅØ
-    printf(AT_WIFI_MODE_SOFTAP); //ËÆæÁΩÆWIFIÊ®°Âºè
-    printf(AT_RST); //ËÆ©WifiÊ®°ÂùóÈáçÂêØÁöÑÂëΩ‰ª§
-    printf(AT_WIFI_SET); //ËÆæÁΩÆWIFI
-    printf(AT_WIFI_SERVER); //ÂºÄÂêØÊúçÂä°Âô®
-    
+    print_wifi(AT_Test);             // ºÏ≤‚…Ë±∏ «∑Ò‘⁄œﬂ
+    print_wifi(AT_RST);              // »√Wifiƒ£øÈ÷ÿ∆Ùµƒ√¸¡Ó
+    print_wifi(AT_GMR);              // ªÒ»°πÃº˛∞Ê±æ∫≈
+    print_wifi(AT_SYSMSG);           // ªÒ»°œµÕ≥–≈œ¢
+    print_wifi(AT_WIFI_MODE_SOFTAP); // …Ë÷√WIFIƒ£ Ω
+    print_wifi(AT_RST);              // »√Wifiƒ£øÈ÷ÿ∆Ùµƒ√¸¡Ó
+    print_wifi(AT_WIFI_SET);         // …Ë÷√WIFI
+    print_wifi(AT_WIFI_SERVER);      // ø™∆Ù∑˛ŒÒ∆˜
 }
 
 /************************************************
  * name: wifi_client_init
- * function: ÂàùÂßãÂåñWIFIÊ®°Âùó‰∏∫ÂÆ¢Êà∑Á´ØÊ®°Âºè
+ * function: ≥ı ºªØWIFIƒ£øÈŒ™øÕªß∂Àƒ£ Ω
  * input: void
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
 
 void wifi_client_init(void)
 {
     // Initialize the wifi module
-    printf(AT_Test); //Ê£ÄÊµãËÆæÂ§áÊòØÂê¶Âú®Á∫ø
-    printf(AT_RST); //ËÆ©WifiÊ®°ÂùóÈáçÂêØÁöÑÂëΩ‰ª§
-    printf(AT_GMR); //Ëé∑ÂèñÂõ∫‰ª∂ÁâàÊú¨Âè∑
-    printf(AT_SYSMSG); //Ëé∑ÂèñÁ≥ªÁªü‰ø°ÊÅØ
-    printf(AT_WIFI_MODE_STATION); //ËÆæÁΩÆWIFIÊ®°Âºè
-    printf(AT_RST); //ËÆ©WifiÊ®°ÂùóÈáçÂêØÁöÑÂëΩ‰ª§
+  print_wifi("AT+RESTORE\r\n");
+  delay_ms(100);
+  print_wifi("AT+RST\r\n");
+  delay_ms(100);
+  print_wifi("AT+CWMODE=1\r\n");
+  delay_ms(100);
+  print_wifi("AT+RST\r\n");
+  delay_ms(100);
+  print_wifi("AT+UART=115200,8,1,0,0\r\n");
+  delay_ms(100);
+   //print_wifi("AT+CWSAP=\"esp8266\",\"123456789999\",1,3\r\n");
+  delay_ms(100);
+   print_wifi("AT+CWJAP=\"GPTT\",\"12345678999\"\r\n");
+   delay_ms(100);
+  print_wifi("AT+CIPMUX=0\r\n");
+  delay_ms(100);
+  //print_wifi("AT+CIPSERVER=1,8080\r\n");
+  delay_ms(100);
+  // print_wifi("AT+CIPSTART=\"TCP\",\"172.27.16.1\",8080\r\n");
+  delay_ms(100);
+  print_wifi("AT+CIPSTO=500\r\n");
+  delay_ms(100);      
+  print_wifi("AT+CIFSR\r\n");
+}
 
+/************************************************
+ * name: wifi_client_send
+ * function: ∑¢ÀÕ ˝æ›
+ * input: data: ∑¢ÀÕµƒ ˝æ›
+ *        len:  ˝æ›≥§∂»
+ * output: void
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
+void wifi_client_send(uint16_t *data, uint8_t len)
+{
+    // Connect to the wifi network
+    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.66.28\", 8080\r\n"); // ¡¨Ω”TCP
+    delay_ms(100);
+    print_wifi("AT+CIPMODE=1\r\n");
+    delay_ms(100);
+    print_wifi("AT+CIPSEND\r\n");
+    delay_ms(100);
+    // print_wifi("AT+CIPSEND=0,%d\r\n", len); // ∑¢ÀÕ ˝æ›
+    delay_ms(100);
+    print_wifi("HELLO\r\n ");
+    for(int i = 0; i < len; i++)
+    {
+        print_wifi("%u", data[i]); // ∑¢ÀÕ ˝æ›
+    }
+    print_wifi("\r\n"); // ∑¢ÀÕΩ· ¯∑˚
+    delay_ms(100);
+    print_wifi("AT+CIPCLOSE\r\n");
+}
+/************************************************
+ * name: wifi_AP_init
+ * function: ≥ı ºªØWIFIƒ£øÈŒ™APƒ£ Ω(»»µ„ƒ£ Ω)
+ * input: void
+ * output: void
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
+
+void wifi_AP_init(void)
+{
+    // Initialize the wifi module
+    print_wifi("AT\r\n"); // ºÏ≤‚…Ë±∏ «∑Ò‘⁄œﬂ
+    delay_ms(100);
+    print_wifi("AT+RST\r\n"); // »√Wifiƒ£øÈ÷ÿ∆Ùµƒ√¸¡Ó
+    delay_ms(100);
+    print_wifi("AT+GMR\r\n"); // ªÒ»°πÃº˛∞Ê±æ∫≈
+    delay_ms(100);
+    print_wifi("AT+SYSMSG\r\n"); // ªÒ»°œµÕ≥–≈œ¢
+    delay_ms(100);
+    print_wifi("AT+CWMODE=2\r\n"); // …Ë÷√WIFIƒ£ Ω
+    delay_ms(100);
+    print_wifi("AT+CWSAP=\"ESP8266\",\"123456789\"\r\n"); // …Ë÷√WIFI
+    delay_ms(100);
+    print_wifi("AT+CIPMUX=1\r\n"); // …Ë÷√∂‡¡¨Ω”
+    delay_ms(100);
+    print_wifi("AT+CIPSERVER=1,8080\r\n"); // ø™∆Ù∑˛ŒÒ∆˜
+    delay_ms(100);
+    print_wifi("AT+CIPSTO=500\r\n"); // …Ë÷√≥¨ ± ±º‰
+    delay_ms(100);
+    print_wifi("AT+UART=115200,8,1,0,0\r\n"); // …Ë÷√≤®Ãÿ¬ 
+    delay_ms(100);
+
+    // print_wifi(AT_RST); //»√Wifiƒ£øÈ÷ÿ∆Ùµƒ√¸¡Ó
+    // print_wifi(AT_WIFI_SET); //…Ë÷√WIFI
+    // print_wifi(AT_WIFI_SERVER); //ø™∆Ù∑˛ŒÒ∆˜
 }
 
 /************************************************
  * name: wifi_SCAN
- * function: Êâ´ÊèèWIFI
+ * function: …®√ËWIFI
  * input: void
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
 
 void wifi_SCAN(void)
 {
     // Connect to the wifi network
-    printf(AT_WIFI_SCAN); //Êâ´ÊèèWIFI
+    print_wifi(AT_WIFI_SCAN); // …®√ËWIFI
 }
 
 /************************************************
  * name: wifi_connect
- * function: ËøûÊé•WIFI
- * input: ssid: WIFIÂêçÁß∞
- *        password: WIFIÂØÜÁ†Å
+ * function: ¡¨Ω”WIFI
+ * input: ssid: WIFI√˚≥∆
+ *        password: WIFI√‹¬Î
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
 
-void wifi_connect(char* ssid, char* password)
+void wifi_connect(char *ssid, char *password)
 {
     // Connect to the wifi network
-    printf("AT+CWJAP=\"%s\",\"%s\"\r\n",ssid,password); //ËøûÊé•WIFI
+    print_wifi("AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password); // ¡¨Ω”WIFI
 }
 
 /************************************************
  * name: wifi_TCP_connect
- * function: ËøûÊé•TCPÊúçÂä°Âô®
- * input: ip: ÊúçÂä°Âô®IPÂú∞ÂùÄ
- *        port: ÊúçÂä°Âô®Á´ØÂè£
+ * function: ¡¨Ω”TCP∑˛ŒÒ∆˜
+ * input: ip: ∑˛ŒÒ∆˜IPµÿ÷∑
+ *        port: ∑˛ŒÒ∆˜∂Àø⁄
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
 
-void wifi_TCP_connect(char* ip, char* port)
+void wifi_TCP_connect(char *ip, char *port)
 {
     // Connect to the wifi network
-    printf("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n",ip,port); //ËøûÊé•TCP
+    print_wifi("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n", ip, port); // ¡¨Ω”TCP
 }
 
 /************************************************
  * name: wifi_TCP_send
- * function: ÂèëÈÄÅÊï∞ÊçÆ
- * input: data: ÂèëÈÄÅÁöÑÊï∞ÊçÆ
- *        len: Êï∞ÊçÆÈïøÂ∫¶
+ * function: ∑¢ÀÕ ˝æ›
+ * input: data: ∑¢ÀÕµƒ ˝æ›
+ *        len:  ˝æ›≥§∂»
  * output: void
- * notice: ÈúÄË¶ÅÈÖçÂêà‰∏≤Âè£‰ΩøÁî®
-************************************************/
+ * notice: –Ë“™≈‰∫œ¥Æø⁄ π”√
+ ************************************************/
 
-void wifi_send_data(uint8_t *data, uint16_t len)
+void wifi_send_data(unsigned char *data, unsigned int len)
 {
     // Send data over wifi
-    printf("AT+CIPSEND=0,%d\r\n",len); //ÂèëÈÄÅÊï∞ÊçÆ
-    //ÂèØËÉΩÈúÄË¶ÅÂª∂Ëøü
-    for(int i=0; i<len; i++)
+    print_wifi("AT+CIPSEND=0,%d\r\n", len); // ∑¢ÀÕ ˝æ›
+    // ø…ƒ‹–Ë“™—”≥Ÿ
+    for (int i = 0; i < len; i++)
     {
-        putchar(data[i]); //ÂèëÈÄÅÊï∞ÊçÆ
+        print_wifi("%u", data[i]); // ∑¢ÀÕ ˝æ›
     }
-    putchar(26); //ÂèëÈÄÅÁªìÊùüÁ¨¶
+    print_wifi("\r\n"); // ∑¢ÀÕΩ· ¯∑˚
 }
-
-
-
-
-
-
 

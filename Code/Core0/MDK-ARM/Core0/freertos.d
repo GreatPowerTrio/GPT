@@ -39,9 +39,13 @@ core0\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 core0\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 core0\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 core0\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+core0\freertos.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+core0\freertos.o: ../Core/Inc/filter.h
+core0\freertos.o: ../Core/Inc/main.h
+core0\freertos.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\math.h
 core0\freertos.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\freertos.o: ../Core/Inc/usart.h
-core0\freertos.o: ../Core/Inc/main.h
 core0\freertos.o: ../Core/Inc/spi.h
+core0\freertos.o: ../Core/Inc/wifi.h
 core0\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 core0\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h

@@ -2,6 +2,7 @@
 "core0\startup_stm32f103xe.o"
 "core0\spi.o"
 "core0\wifi.o"
+"core0\filter.o"
 "core0\main.o"
 "core0\gpio.o"
 "core0\freertos.o"

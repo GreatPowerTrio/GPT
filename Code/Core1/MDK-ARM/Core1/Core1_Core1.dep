@@ -1,8 +1,8 @@
 Dependencies for Project 'Core1', Target 'Core1': (DO NOT MODIFY !)
-F (startup_stm32f103xe.s)(0x661A0C46)(--cpu Cortex-M3 -g --apcs=interwork -I ../Core/Inc-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include--pd "__UVISION_VERSION SETA 520" --pd "_RTE_ SETA 1" --pd "STM32F10X_HD SETA 1"--list startup_stm32f103xe.lst --xref -o core1\startup_stm32f103xe.o --depend core1\startup_stm32f103xe.d)
-F (..\Core\Src\lcd.c)(0x6613D293)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\lcd.o --omf_browse core1\lcd.crf --depend core1\lcd.d)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
-I (../Core/Inc/main.h)(0x66191F0F)
+F (startup_stm32f103xe.s)(0x6640AB08)(--cpu Cortex-M3 -g --apcs=interwork -I ../Core/Inc-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include--pd "__UVISION_VERSION SETA 520" --pd "_RTE_ SETA 1" --pd "STM32F10X_HD SETA 1"--list startup_stm32f103xe.lst --xref -o core1\startup_stm32f103xe.o --depend core1\startup_stm32f103xe.d)
+F (..\Core\Src\lcd.c)(0x661BA746)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\lcd.o --omf_browse core1\lcd.crf --depend core1\lcd.d)
+I (../Core/Inc/lcd.h)(0x661BBE44)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -32,10 +32,11 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
-I (../Core/Inc/lcdfont.h)(0x65EEEE01)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
+I (../Core/Inc/lcdfont.h)(0x661BA44D)
 F (..\Core\Src\lcd_init.c)(0x6619FA55)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\lcd_init.o --omf_browse core1\lcd_init.crf --depend core1\lcd_init.d)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -62,11 +63,12 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
-F (../Core/Src/main.c)(0x661535C0)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\main.o --omf_browse core1\main.crf --depend core1\main.d)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
+F (../Core/Src/main.c)(0x661E5C00)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\main.o --omf_browse core1\main.crf --depend core1\main.d)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -93,10 +95,11 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x65F3F651)
 I (../Core/Inc/FreeRTOSConfig.h)(0x6613A9EB)
@@ -106,9 +109,9 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h)(
 I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x65F3F651)
 I (../Core/Inc/gpio.h)(0x6613A9E8)
-F (../Core/Src/gpio.c)(0x6618F8ED)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\gpio.o --omf_browse core1\gpio.crf --depend core1\gpio.d)
+F (../Core/Src/gpio.c)(0x6640AAFD)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\gpio.o --omf_browse core1\gpio.crf --depend core1\gpio.d)
 I (../Core/Inc/gpio.h)(0x6613A9E8)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -135,11 +138,12 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
-F (../Core/Src/freertos.c)(0x661A2406)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\freertos.o --omf_browse core1\freertos.crf --depend core1\freertos.d)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
+F (../Core/Src/freertos.c)(0x6640ABCB)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\freertos.o --omf_browse core1\freertos.crf --depend core1\freertos.d)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x65F3F651)
 I (D:\Applications\Keil\ARM\ARMCC\include\stddef.h)(0x56FE42DE)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdint.h)(0x56FE42DE)
@@ -151,7 +155,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x65F3F651)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -176,14 +180,16 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x65F3F651)
-F (../Core/Src/stm32f1xx_it.c)(0x661A14AB)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\stm32f1xx_it.o --omf_browse core1\stm32f1xx_it.crf --depend core1\stm32f1xx_it.d)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (../Core/Inc/pic.h)(0x66408156)
+F (../Core/Src/stm32f1xx_it.c)(0x6640AD79)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\stm32f1xx_it.o --omf_browse core1\stm32f1xx_it.crf --depend core1\stm32f1xx_it.d)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -210,11 +216,12 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
-I (../Core/Inc/stm32f1xx_it.h)(0x6618E78F)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
+I (../Core/Inc/stm32f1xx_it.h)(0x661FD06E)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x65F3F651)
 I (../Core/Inc/FreeRTOSConfig.h)(0x6613A9EB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h)(0x65F3F651)
@@ -222,10 +229,8 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h)(0x65F3F651)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x65F3F651)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x65F3F651)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x65F3F651)
 F (../Core/Src/stm32f1xx_hal_msp.c)(0x6613A9EC)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\stm32f1xx_hal_msp.o --omf_browse core1\stm32f1xx_hal_msp.crf --depend core1\stm32f1xx_hal_msp.d)
-I (../Core/Inc/main.h)(0x66191F0F)
+I (../Core/Inc/main.h)(0x6640AB02)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x65F3F664)
@@ -252,10 +257,11 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x65F3F664)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x65F3F664)
-I (../Core/Inc/lcd.h)(0x6619E0C8)
+I (../Core/Inc/lcd.h)(0x661BBE44)
 I (../Core/Inc/lcd_init.h)(0x6613B11A)
 I (D:\Applications\Keil\ARM\ARMCC\include\stdbool.h)(0x56FE42DC)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x65F3F651)
+I (D:\Applications\Keil\ARM\ARMCC\include\math.h)(0x56FE42D6)
 F (../Core/Src/stm32f1xx_hal_timebase_tim.c)(0x6613A9ED)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include-I d:\Desktop\GPT\Code\Core1\MDK-ARM\RTE-I D:\Applications\Keil\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Applications\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o core1\stm32f1xx_hal_timebase_tim.o --omf_browse core1\stm32f1xx_hal_timebase_tim.crf --depend core1\stm32f1xx_hal_timebase_tim.d)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x65F3F664)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6613A9ED)

@@ -48,3 +48,4 @@ core0\usart.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\usart.o: ../Core/Inc/usart.h
 core0\usart.o: ../Core/Inc/spi.h
 core0\usart.o: ../Core/Inc/wifi.h
+core0\usart.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h

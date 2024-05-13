@@ -8,6 +8,7 @@
 "core0\freertos.o"
 "core0\adc.o"
 "core0\dma.o"
+"core0\tim.o"
 "core0\usart.o"
 "core0\stm32f1xx_it.o"
 "core0\stm32f1xx_hal_msp.o"

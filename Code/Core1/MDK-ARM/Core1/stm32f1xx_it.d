@@ -32,6 +32,7 @@ core1\stm32f1xx_it.o: ../Core/Inc/main.h
 core1\stm32f1xx_it.o: ../Core/Inc/lcd_init.h
 core1\stm32f1xx_it.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+core1\stm32f1xx_it.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\math.h
 core1\stm32f1xx_it.o: ../Core/Inc/stm32f1xx_it.h
 core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 core1\stm32f1xx_it.o: ../Core/Inc/FreeRTOSConfig.h
@@ -40,5 +41,3 @@ core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portabl
 core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
 core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
-core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
-core1\stm32f1xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h

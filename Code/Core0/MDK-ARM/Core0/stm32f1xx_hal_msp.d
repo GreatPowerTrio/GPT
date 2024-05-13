@@ -47,3 +47,4 @@ core0\stm32f1xx_hal_msp.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\stm32f1xx_hal_msp.o: ../Core/Inc/usart.h
 core0\stm32f1xx_hal_msp.o: ../Core/Inc/spi.h
 core0\stm32f1xx_hal_msp.o: ../Core/Inc/wifi.h
+core0\stm32f1xx_hal_msp.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h

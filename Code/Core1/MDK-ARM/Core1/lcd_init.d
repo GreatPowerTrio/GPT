@@ -33,3 +33,4 @@ core1\lcd_init.o: ../Core/Inc/main.h
 core1\lcd_init.o: ../Core/Inc/lcd_init.h
 core1\lcd_init.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 core1\lcd_init.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+core1\lcd_init.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\math.h

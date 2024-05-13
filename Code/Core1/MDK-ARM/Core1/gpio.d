@@ -33,3 +33,4 @@ core1\gpio.o: ../Core/Inc/main.h
 core1\gpio.o: ../Core/Inc/lcd_init.h
 core1\gpio.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 core1\gpio.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+core1\gpio.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\math.h

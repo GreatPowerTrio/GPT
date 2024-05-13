@@ -26,11 +26,11 @@ void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t length,uint16_t width,const 
 //画笔颜色
 #define WHITE         	 0xFFFF
 #define BLACK         	 0x0000	  
-#define RED           	 0x001F  
+#define BLUE           	 0x001F  
 #define BRED             0XF81F
 #define GRED 			       0XFFE0
 #define GBLUE			       0X07FF
-#define BLUE           	 0xF800
+#define RED           	 0xF800
 #define MAGENTA       	 0xF81F
 #define GREEN         	 0x07E0
 #define CYAN          	 0x7FFF

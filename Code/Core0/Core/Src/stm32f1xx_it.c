@@ -62,7 +62,7 @@ extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
 
-extern char u_buf[PRINT_BUF_SIZE];
+extern char print_buf[PRINT_BUF_SIZE];
 extern uint8_t rec_data;
 
 /* USER CODE END EV */
@@ -225,20 +225,10 @@ void TIM6_IRQHandler(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if(huart->Instance == USART2)
-  {
-    // Send to PC
-    HAL_UART_Transmit(&huart1, &rec_data, 1, 0);
-
-    HAL_UART_Receive_IT(&huart1, &rec_data, 1);
-    HAL_UART_Receive_IT(&huart2, &rec_data, 1);
-  }
-
-
   // PC send to stm32
   if(huart->Instance == USART1)
   {
-    // Send back to PC
+    // Send back to PC, not necessary
     // HAL_UART_Transmit(&huart1, &rec_data, 1, 0);
     
     // Send to ESP8266
@@ -249,6 +239,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
       HAL_UART_Receive_IT(&huart2, &rec_data, 1);
     else
       HAL_UART_Receive_IT(&huart1, &rec_data, 1);
+  }
+
+
+  if(huart->Instance == USART2)
+  {
+    // Send to PC
+    HAL_UART_Transmit(&huart1, &rec_data, 1, 0);
+
+    wifi_check_flag(OK,       rec_data);
+    wifi_check_flag(READY,    rec_data);
+    wifi_check_flag(CONNECT,  rec_data);
+    wifi_check_flag(SEND_OK,  rec_data);
+    wifi_check_flag(CLOSED,   rec_data);
+
+    
+    HAL_UART_Receive_IT(&huart1, &rec_data, 1);
+    HAL_UART_Receive_IT(&huart2, &rec_data, 1);
   }
 }
 

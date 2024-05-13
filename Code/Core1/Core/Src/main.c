@@ -90,6 +90,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   LCD_Init();
   LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+
   /* USER CODE END 2 */
 
   /* Init scheduler */

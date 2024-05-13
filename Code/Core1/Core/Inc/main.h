@@ -35,6 +35,7 @@ extern "C" {
 #include "lcd_init.h"
 #include "stdbool.h"
 #include "cmsis_os2.h"
+#include "math.h"
 
 /* USER CODE END Includes */
 
@@ -78,13 +79,22 @@ void Error_Handler(void);
 #define C2C_SCLK_Pin GPIO_PIN_6
 #define C2C_SCLK_GPIO_Port GPIOC
 #define C2C_SCLK_EXTI_IRQn EXTI9_5_IRQn
-#define C2C_MISO_Pin GPIO_PIN_7
-#define C2C_MISO_GPIO_Port GPIOC
+#define C2C_WIFI_Pin GPIO_PIN_7
+#define C2C_WIFI_GPIO_Port GPIOC
 #define C2C_MOSI_Pin GPIO_PIN_8
 #define C2C_MOSI_GPIO_Port GPIOC
 #define C2C_CS_Pin GPIO_PIN_9
 #define C2C_CS_GPIO_Port GPIOC
 #define C2C_CS_EXTI_IRQn EXTI9_5_IRQn
+#define KEY1_Pin GPIO_PIN_10
+#define KEY1_GPIO_Port GPIOC
+#define KEY1_EXTI_IRQn EXTI15_10_IRQn
+#define KEY2_Pin GPIO_PIN_11
+#define KEY2_GPIO_Port GPIOC
+#define KEY2_EXTI_IRQn EXTI15_10_IRQn
+#define KEY3_Pin GPIO_PIN_12
+#define KEY3_GPIO_Port GPIOC
+#define KEY3_EXTI_IRQn EXTI15_10_IRQn
 
 /* USER CODE BEGIN Private defines */
 

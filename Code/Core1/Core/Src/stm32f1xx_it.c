@@ -23,8 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
-#include "queue.h"
-#include "semphr.h"
+
 //#include "portmacro.h"
 
 /* USER CODE END Includes */
@@ -47,9 +46,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-uint16_t c2c_data;
+static uint16_t c2c_data;
+uint16_t rec_data;
 
-extern osMessageQueueId_t C2CQueueHandle;
+bool key1_flag = false;
+bool key2_flag = false;
+bool key3_flag = false;
+
+extern bool key_locked;
+
 
 /* USER CODE END PV */
 
@@ -183,6 +188,22 @@ void EXTI9_5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(KEY1_Pin);
+  HAL_GPIO_EXTI_IRQHandler(KEY2_Pin);
+  HAL_GPIO_EXTI_IRQHandler(KEY3_Pin);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt.
   */
 void TIM6_IRQHandler(void)
@@ -222,11 +243,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       if(cnt16 == 16)
       {
         cnt16 = 0;
+        rec_data = c2c_data;
         c2c_cs_fall_flag = false;
       }
     }
     break;
 
+  case KEY1_Pin:
+    if(!key_locked)
+      key1_flag = true;
+    break;
+  case KEY2_Pin:
+    if(!key_locked)
+      key2_flag = true;
+    break;
+  case KEY3_Pin:
+    if(!key_locked)
+      key3_flag = true;
+    break;
+    
   default:
     break;
   }

@@ -48,4 +48,6 @@ core0\wifi.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\wifi.o: ../Core/Inc/usart.h
 core0\wifi.o: ../Core/Inc/spi.h
 core0\wifi.o: ../Core/Inc/wifi.h
+core0\wifi.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h
 core0\wifi.o: ../Core/Inc/AT_cmdset.h
+core0\wifi.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h

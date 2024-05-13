@@ -9,6 +9,9 @@
     "string.h": "c",
     "task.h": "c",
     "timers.h": "c",
-    "_mutex.h": "c"
+    "_mutex.h": "c",
+    "lcd.h": "c",
+    "pic.h": "c",
+    "string": "c"
   }
 }

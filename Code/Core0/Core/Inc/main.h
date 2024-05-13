@@ -40,6 +40,7 @@ extern "C" {
 #include "usart.h"
 #include "spi.h"
 #include "wifi.h"
+#include "string.h"
 
 /* USER CODE END Includes */
 
@@ -63,6 +64,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -70,24 +73,26 @@ void Error_Handler(void);
 #define C2C_CS_GPIO_Port GPIOC
 #define C2C_MOSI_Pin GPIO_PIN_7
 #define C2C_MOSI_GPIO_Port GPIOC
-#define C2C_MISO_Pin GPIO_PIN_8
-#define C2C_MISO_GPIO_Port GPIOC
+#define C2C_WIFI_Pin GPIO_PIN_8
+#define C2C_WIFI_GPIO_Port GPIOC
 #define C2C_SCLK_Pin GPIO_PIN_9
 #define C2C_SCLK_GPIO_Port GPIOC
 #define LED_Pin GPIO_PIN_8
 #define LED_GPIO_Port GPIOA
-#define ECG_LEAD_OFF_Pin GPIO_PIN_3
-#define ECG_LEAD_OFF_GPIO_Port GPIOB
-#define LEAD_OFF_Pin GPIO_PIN_4
-#define LEAD_OFF_GPIO_Port GPIOB
+#define ECG_ZERO_Pin GPIO_PIN_3
+#define ECG_ZERO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
 #define PRINT_BUF_SIZE 100
+#define SIZE 40
+
+#define print(...)            HAL_UART_Transmit(&huart1,      (uint8_t *)print_buf, sprintf((char *)print_buf, __VA_ARGS__), 0xFFFF)
+#define print_wifi(...)       HAL_UART_Transmit(&huart2,      (uint8_t *)print_buf, sprintf((char *)print_buf, __VA_ARGS__), 0xFFFF)
 
 
-#define print(...)            HAL_UART_Transmit(&huart1,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
-#define print_wifi(...)       HAL_UART_Transmit(&huart2,      (uint8_t *)u_buf, sprintf((char *)u_buf, __VA_ARGS__), 0xFFFF)
+#define ABS(x)      (((x) < (0)) ? (-(x)) : (x))
+#define MAX(a, b)   (a) > (b) ? (a) : (b)
 
 /* USER CODE END Private defines */
 

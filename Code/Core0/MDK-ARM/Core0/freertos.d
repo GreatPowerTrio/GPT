@@ -47,5 +47,6 @@ core0\freertos.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\freertos.o: ../Core/Inc/usart.h
 core0\freertos.o: ../Core/Inc/spi.h
 core0\freertos.o: ../Core/Inc/wifi.h
+core0\freertos.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h
 core0\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 core0\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h

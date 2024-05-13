@@ -32,6 +32,7 @@ core1\main.o: ../Core/Inc/main.h
 core1\main.o: ../Core/Inc/lcd_init.h
 core1\main.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 core1\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+core1\main.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\math.h
 core1\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 core1\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 core1\main.o: ../Core/Inc/FreeRTOSConfig.h

@@ -11,9 +11,6 @@
 #define C2C_MOSI_Clr()    HAL_GPIO_WritePin(C2C_MOSI_GPIO_Port, C2C_MOSI_Pin, GPIO_PIN_RESET)
 #define C2C_MOSI_Set()    HAL_GPIO_WritePin(C2C_MOSI_GPIO_Port, C2C_MOSI_Pin, GPIO_PIN_SET)
 
-// MISO
-#define C2C_MISO_Clr()    HAL_GPIO_WritePin(C2C_MISO_GPIO_Port, C2C_MISO_Pin, GPIO_PIN_RESET)
-#define C2C_MISO_Set()    HAL_GPIO_WritePin(C2C_MISO_GPIO_Port, C2C_MISO_Pin, GPIO_PIN_SET)
 
 // CS 		     
 #define C2C_CS_Clr()      HAL_GPIO_WritePin(C2C_CS_GPIO_Port, C2C_CS_Pin, GPIO_PIN_RESET)

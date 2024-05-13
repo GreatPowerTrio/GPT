@@ -48,3 +48,4 @@ core0\filter.o: ../Core/Inc/usart.h
 core0\filter.o: ../Core/Inc/main.h
 core0\filter.o: ../Core/Inc/spi.h
 core0\filter.o: ../Core/Inc/wifi.h
+core0\filter.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h

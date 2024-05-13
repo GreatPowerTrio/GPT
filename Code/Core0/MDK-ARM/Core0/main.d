@@ -47,8 +47,10 @@ core0\main.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 core0\main.o: ../Core/Inc/usart.h
 core0\main.o: ../Core/Inc/spi.h
 core0\main.o: ../Core/Inc/wifi.h
+core0\main.o: D:\Applications\Keil\ARM\ARMCC\Bin\..\include\string.h
 core0\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 core0\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
 core0\main.o: ../Core/Inc/adc.h
 core0\main.o: ../Core/Inc/dma.h
+core0\main.o: ../Core/Inc/tim.h
 core0\main.o: ../Core/Inc/gpio.h

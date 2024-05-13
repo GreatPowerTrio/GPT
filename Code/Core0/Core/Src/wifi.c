@@ -1,204 +1,253 @@
 #include "wifi.h"
 #include "AT_cmdset.h"
 #include "main.h"
+#include "FreeRTOS.h"
+#include "cmsis_os2.h"
 
+extern uint8_t rec_data;
 extern UART_HandleTypeDef huart2;
-// 延时ms
-void delay_ms(uint32_t ms)
+extern char print_buf[PRINT_BUF_SIZE];
+
+#define SPRINTF_BUF_SIZE 20
+/* 由函数 wifi_send_data( data ) 调用，将整形转化为字符串储存在 sprintf_buf 中 */
+char sprintf_buf[SPRINTF_BUF_SIZE];
+
+
+
+char *esp8266_return_code[] = { "OK", "ready", "CONNECT", "SEND OK", "CLOSED"};
+uint8_t  return_code_size[] = {    2,       5,         7,         7,        6};
+bool           flag_table[] = {false,   false,     false,     false,    false};
+uint8_t      flag_pointer[] = {    0,       0,         0,         0,        0};
+
+
+
+/**
+  * @brief  wifi内部软件延时函数
+  * @param  tick : 延时的节拍数
+  * @retval 无
+  * @note   没有精确延时，以从0到500的循环递增为一个节拍
+  */
+void wifi_delay(uint16_t tick)
 {
-    for (uint32_t i = 0; i < ms; i++)
+    for (uint16_t i = 0; i < tick; i++)
     {
-        for (uint32_t j = 0; j < 1000; j++)
+        for (uint16_t j = 0; j < 500; j++)
         {
             // Software delay loop
         }
     }
 }
 
-/************************************************
- * name: wifi_server_init
- * function: 初始化WIFI模块为服务器模式
- * input: void
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
-extern char u_buf[100];
-void wifi_server_init(void)
+
+
+/**
+  * @brief  获取指定返回代码的标志位
+  * @param  code : ESP8266返回代码的枚举类型
+  * @retval 指定代码的标志位
+  */
+bool wifi_get_flag(ESP8266_RETURN_CODE code)
 {
-    // Initialize the wifi module
-    print_wifi(AT_Test);             // 检测设备是否在线
-    print_wifi(AT_RST);              // 让Wifi模块重启的命令
-    print_wifi(AT_GMR);              // 获取固件版本号
-    print_wifi(AT_SYSMSG);           // 获取系统信息
-    print_wifi(AT_WIFI_MODE_SOFTAP); // 设置WIFI模式
-    print_wifi(AT_RST);              // 让Wifi模块重启的命令
-    print_wifi(AT_WIFI_SET);         // 设置WIFI
-    print_wifi(AT_WIFI_SERVER);      // 开启服务器
+    return flag_table[code];
 }
 
-/************************************************
- * name: wifi_client_init
- * function: 初始化WIFI模块为客户端模式
- * input: void
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
 
-void wifi_client_init(void)
+
+/**
+  * @brief  清除指定返回代码的标志位
+  * @param  code : ESP8266返回代码的枚举类型
+  * @retval 无
+  */
+void wifi_clear_flag(ESP8266_RETURN_CODE code)
 {
-    // Initialize the wifi module
-  print_wifi("AT+RESTORE\r\n");
-  delay_ms(100);
-  print_wifi("AT+RST\r\n");
-  delay_ms(100);
-  print_wifi("AT+CWMODE=1\r\n");
-  delay_ms(100);
-  print_wifi("AT+RST\r\n");
-  delay_ms(100);
-  print_wifi("AT+UART=115200,8,1,0,0\r\n");
-  delay_ms(100);
-   //print_wifi("AT+CWSAP=\"esp8266\",\"123456789999\",1,3\r\n");
-  delay_ms(100);
-   print_wifi("AT+CWJAP=\"GPTT\",\"12345678999\"\r\n");
-   delay_ms(100);
-  print_wifi("AT+CIPMUX=0\r\n");
-  delay_ms(100);
-  //print_wifi("AT+CIPSERVER=1,8080\r\n");
-  delay_ms(100);
-  // print_wifi("AT+CIPSTART=\"TCP\",\"172.27.16.1\",8080\r\n");
-  delay_ms(100);
-  print_wifi("AT+CIPSTO=500\r\n");
-  delay_ms(100);      
-  print_wifi("AT+CIFSR\r\n");
+    flag_table[code] = false;
+    flag_pointer[code] = 0;
 }
 
-/************************************************
- * name: wifi_client_send
- * function: 发送数据
- * input: data: 发送的数据
- *        len: 数据长度
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
-void wifi_client_send(uint16_t *data, uint8_t len)
+
+/**
+  * @brief  设置指定返回代码的标志位
+  * @param  code : ESP8266返回代码的枚举类型
+  * @retval 无
+  * @note   用于只检测一次的标志位，设置后在串口中断中不会重复检测
+  */
+void wifi_set_flag(ESP8266_RETURN_CODE code)
 {
-    // Connect to the wifi network
-    print_wifi("AT+CIPSTART=\"TCP\",\"192.168.66.28\", 8080\r\n"); // 连接TCP
-    delay_ms(100);
-    print_wifi("AT+CIPMODE=1\r\n");
-    delay_ms(100);
-    print_wifi("AT+CIPSEND\r\n");
-    delay_ms(100);
-    // print_wifi("AT+CIPSEND=0,%d\r\n", len); // 发送数据
-    delay_ms(100);
-    print_wifi("HELLO\r\n ");
-    for(int i = 0; i < len; i++)
+    flag_table[code] = true;
+}
+
+
+
+
+/**
+  * @brief  在串口接收中断中，逐字符地检查指定标志位
+  * @param  code        ESP8266返回代码的枚举类型
+  * @param  rec_data    串口接收中断接收的字符
+  * @retval 无
+  * @note   在 stmf1xx.it.c 的 HAL_UART_RxCpltCallback() 中调用
+  */
+void wifi_check_flag(ESP8266_RETURN_CODE code, char rec_data)
+{   
+    if(flag_table[code] == false)
     {
-        print_wifi("%u", data[i]); // 发送数据
+        if(rec_data == esp8266_return_code[code][flag_pointer[code]])
+            flag_pointer[code] += 1;
+        else
+            flag_pointer[code]  = 0;
+    
+        if(flag_pointer[code] == return_code_size[code])
+        {
+            flag_pointer[code] = 0;
+            flag_table[code] = true;
+        }
     }
-    print_wifi("\r\n"); // 发送结束符
-    delay_ms(100);
-    print_wifi("AT+CIPCLOSE\r\n");
-}
-/************************************************
- * name: wifi_AP_init
- * function: 初始化WIFI模块为AP模式(热点模式)
- * input: void
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
-
-void wifi_AP_init(void)
-{
-    // Initialize the wifi module
-    print_wifi("AT\r\n"); // 检测设备是否在线
-    delay_ms(100);
-    print_wifi("AT+RST\r\n"); // 让Wifi模块重启的命令
-    delay_ms(100);
-    print_wifi("AT+GMR\r\n"); // 获取固件版本号
-    delay_ms(100);
-    print_wifi("AT+SYSMSG\r\n"); // 获取系统信息
-    delay_ms(100);
-    print_wifi("AT+CWMODE=2\r\n"); // 设置WIFI模式
-    delay_ms(100);
-    print_wifi("AT+CWSAP=\"ESP8266\",\"123456789\"\r\n"); // 设置WIFI
-    delay_ms(100);
-    print_wifi("AT+CIPMUX=1\r\n"); // 设置多连接
-    delay_ms(100);
-    print_wifi("AT+CIPSERVER=1,8080\r\n"); // 开启服务器
-    delay_ms(100);
-    print_wifi("AT+CIPSTO=500\r\n"); // 设置超时时间
-    delay_ms(100);
-    print_wifi("AT+UART=115200,8,1,0,0\r\n"); // 设置波特率
-    delay_ms(100);
-
-    // print_wifi(AT_RST); //让Wifi模块重启的命令
-    // print_wifi(AT_WIFI_SET); //设置WIFI
-    // print_wifi(AT_WIFI_SERVER); //开启服务器
 }
 
-/************************************************
- * name: wifi_SCAN
- * function: 扫描WIFI
- * input: void
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
 
-void wifi_SCAN(void)
+/**
+  * @brief  等待esp8266返回指定代码
+  * @param  code  ESP8266返回代码的枚举类型
+  * @retval 无
+  * @note   若没有接收到指定代码，该函数会阻塞，能够实现同步响应
+  */
+void wifi_wait_code(ESP8266_RETURN_CODE code)
 {
-    // Connect to the wifi network
-    print_wifi(AT_WIFI_SCAN); // 扫描WIFI
+    while(wifi_get_flag(code) == false)
+        wifi_delay(1);
+    wifi_clear_flag(code);
 }
 
-/************************************************
- * name: wifi_connect
- * function: 连接WIFI
- * input: ssid: WIFI名称
- *        password: WIFI密码
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
 
-void wifi_connect(char *ssid, char *password)
+void wifi_wait_code_ex(ESP8266_RETURN_CODE code)
 {
-    // Connect to the wifi network
-    print_wifi("AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password); // 连接WIFI
+    while(wifi_get_flag(code) == false)
+      osDelay(1);
+    wifi_clear_flag(code);
 }
 
-/************************************************
- * name: wifi_TCP_connect
- * function: 连接TCP服务器
- * input: ip: 服务器IP地址
- *        port: 服务器端口
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
 
-void wifi_TCP_connect(char *ip, char *port)
+
+/**
+  * @brief  设置为STATION模式，连接其他设备的wifi
+  * @retval 无
+  */
+void wifi_set_STATION(void)
 {
-    // Connect to the wifi network
-    print_wifi("AT+CIPSTART=\"TCP\",\"%s\",%s\r\n", ip, port); // 连接TCP
+    // 设置为STATION模式
+    print_wifi("AT+CWMODE=1\r\n");
+    wifi_wait_code(OK);
+
+    // 重启生效
+    print_wifi("AT+RST\r\n");
+    wifi_wait_code(READY);
+    wifi_clear_flag(OK);
+
+    // 查询当前WIFI列表，需要花费时间
+    print_wifi("AT+CWLAP\r\n");
+    wifi_wait_code(OK);
+  
+    // 设置要连接的wifi名称和密码
+    print_wifi("AT+CWJAP=\"sbming\",\"1355qwer\"\r\n");
+    wifi_wait_code(OK);
+
+    print_wifi("AT+CIFSR\r\n");
+    wifi_wait_code(OK);
+  
+    print_wifi("AT+CIPMUX=1\r\n");
+    wifi_wait_code(OK);
+
+    print_wifi("AT+CIPSERVER=1,8080\r\n");
+    wifi_wait_code(OK);
 }
 
-/************************************************
- * name: wifi_TCP_send
- * function: 发送数据
- * input: data: 发送的数据
- *        len: 数据长度
- * output: void
- * notice: 需要配合串口使用
- ************************************************/
-
-void wifi_send_data(unsigned char *data, unsigned int len)
+/**
+  * @brief  设置AP模式，产生热点信号
+  * @retval 无
+  */
+void wifi_set_AP(void)
 {
-    // Send data over wifi
-    print_wifi("AT+CIPSEND=0,%d\r\n", len); // 发送数据
-    // 可能需要延迟
-    for (int i = 0; i < len; i++)
+    // 设置为AP模式
+    print_wifi("AT+CWMODE=2\r\n");
+    wifi_wait_code(OK);
+
+    // 重启生效
+    print_wifi("AT+RST\r\n");
+    wifi_wait_code(READY);
+    wifi_clear_flag(OK);
+
+    // 查看esp8266 IP，固定位192.168.4.1
+    print_wifi("AT+CIFSR\r\n");
+    wifi_wait_code(OK);
+
+    print_wifi("AT+CIPMUX=1\r\n");
+    wifi_wait_code(OK);
+ 
+    print_wifi("AT+CIPSERVER=1,8080\r\n");
+    wifi_wait_code(OK);
+
+    // 设置热点的名称和密码
+    print_wifi("AT+CWSAP=\"GPT\",\"12345678\",1,3\r\n");
+    wifi_wait_code(OK);
+
+    // ready 标志位检测一次即可
+    wifi_set_flag(READY);
+}
+
+
+/**
+  * @brief  发送单个数据
+  * @param  data 要发送的16位数据
+  * @retval 无
+  */
+void wifi_send_data(uint16_t data)
+{
+    // 接收到断开标志后，重启连接标志的判断
+    if(wifi_get_flag(CLOSED) == true)
     {
-        print_wifi("%u", data[i]); // 发送数据
+      wifi_clear_flag(CONNECT);
+      wifi_clear_flag(CLOSED);
     }
-    print_wifi("\r\n"); // 发送结束符
+
+    if(wifi_get_flag(CONNECT) == true)
+    {
+      print_wifi("AT+CIPSEND=0,%d\r\n", (int)sprintf(sprintf_buf, "HEAD %d END", data));
+      // wifi_wait_code_ex(OK);
+
+      print_wifi("%s\r\n", sprintf_buf); 
+      // wifi_wait_code_ex(SEND_OK);
+    }
+
 }
 
+
+void wifi_send_package(uint16_t *buf)
+{
+  // len = sprintf(sprintf_buf, "");
+  int len = sprintf(sprintf_buf, "HEAD ");
+  for(int i = 0; i < SIZE; i++)
+    len += sprintf(sprintf_buf, "%s%d ", sprintf_buf, buf[i]) - len; 
+  len += sprintf(sprintf_buf, "%sEND", sprintf_buf) - len;
+
+  if(wifi_get_flag(CONNECT) == true)
+  {
+    print_wifi("AT+CIPSEND=0,%d\r\n", len);
+    wifi_wait_code_ex(OK);
+    print_wifi("%s\r\n", sprintf_buf); 
+    wifi_wait_code_ex(SEND_OK);
+
+  }
+}
+
+
+
+void wifi_send(uint16_t dat)
+{
+  int len = sprintf(sprintf_buf, "HEAD %d END", (int)dat);
+  if(wifi_get_flag(CONNECT) == true)
+  {
+    print_wifi("AT+CIPSEND=0,%d\r\n", len);
+    wifi_wait_code_ex(OK);
+    print_wifi("%s\r\n", sprintf_buf); 
+    wifi_wait_code_ex(SEND_OK);
+
+  }  
+}

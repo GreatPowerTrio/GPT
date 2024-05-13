@@ -4,7 +4,7 @@
 
 void C2C_Write_Uint16(uint16_t dat) 
 {	
-	// Once send 16 bytes.
+	// Once send z bytes.
   uint8_t i;
 	C2C_CS_Clr();
 	for(int j = 0; j < 10; j++);

@@ -91,7 +91,7 @@ namespace TCP_Helper.Forms.Chart
 
             this.chart.Series[0].Color = Color.Red;
 
-            this.chart.Titles[0].Text = string.Format("XXX\"波形\"显示");
+            this.chart.Titles[0].Text = string.Format("心电\"波形\"显示");
             this.chart.Series[0].ChartType = SeriesChartType.Line;
             this.chart.Series[0].Points.Clear();
 
@@ -168,7 +168,7 @@ namespace TCP_Helper.Forms.Chart
 					resultDouble = arr_320_rate;
 				}	
 			}
-			
+			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "当前心率：" + resultStr;
 			DebugBox_Add(newdata);
 			resultStr = null;
 			head_flag = false;

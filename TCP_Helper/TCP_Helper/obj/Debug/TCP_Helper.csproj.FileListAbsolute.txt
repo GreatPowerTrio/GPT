@@ -38,3 +38,5 @@ E:\Storage\GPT\TCP_Helper\TCP_Helper\obj\Debug\TCP_Helper.exe
 E:\Storage\GPT\TCP_Helper\TCP_Helper\obj\Debug\TCP_Helper.pdb
 E:\Storage\GPT\TCP_Helper\TCP_Helper\bin\Debug\System.ValueTuple.dll
 E:\Storage\GPT\TCP_Helper\TCP_Helper\bin\Debug\System.ValueTuple.xml
+D:\Storage\Repo\GPT\TCP_Helper\TCP_Helper\bin\Debug\System.ValueTuple.dll
+D:\Storage\Repo\GPT\TCP_Helper\TCP_Helper\bin\Debug\System.ValueTuple.xml

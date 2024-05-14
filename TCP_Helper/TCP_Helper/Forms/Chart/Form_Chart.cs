@@ -119,54 +119,63 @@ namespace TCP_Helper.Forms.Chart
 			}
 			if (head_flag && end_flag)
 			{
-				if (resultStr.ToInt() < 45)
+				if (resultStr.Contains("DISCONNECT"))
 				{
-					resultDouble = arr_30_rate;
+					//删除start和end
+					Chart_Btn.Text = "启动";
+					MessageBox.Show("设备已断开");
 				}
-				else if (resultStr.ToInt() < 70)
+				else
 				{
-					resultDouble = arr_60_rate;
+					if (resultStr.ToInt() < 45)
+					{
+						resultDouble = arr_30_rate;
+					}
+					else if (resultStr.ToInt() < 70)
+					{
+						resultDouble = arr_60_rate;
+					}
+					else if (resultStr.ToInt() < 85)
+					{
+						resultDouble = arr_80_rate;
+					}
+					else if (resultStr.ToInt() < 105)
+					{
+						resultDouble = arr_90_rate;
+					}
+					else if (resultStr.ToInt() < 135)
+					{
+						resultDouble = arr_120_rate;
+					}
+					else if (resultStr.ToInt() < 165)
+					{
+						resultDouble = arr_150_rate;
+					}
+					else if (resultStr.ToInt() < 195)
+					{
+						resultDouble = arr_180_rate;
+					}
+					else if (resultStr.ToInt() < 225)
+					{
+						resultDouble = arr_210_rate;
+					}
+					else if (resultStr.ToInt() < 255)
+					{
+						resultDouble = arr_240_rate;
+					}
+					else if (resultStr.ToInt() < 285)
+					{
+						resultDouble = arr_270_rate;
+					}
+					else if (resultStr.ToInt() < 310)
+					{
+						resultDouble = arr_300_rate;
+					}
+					else if (resultStr.ToInt() < 340)
+					{
+						resultDouble = arr_320_rate;
+					}
 				}
-				else if (resultStr.ToInt() < 85)
-				{
-					resultDouble = arr_80_rate;
-				}
-				else if (resultStr.ToInt() < 105)
-				{
-					resultDouble = arr_90_rate;
-				}
-				else if (resultStr.ToInt() < 135)
-				{
-					resultDouble = arr_120_rate;
-				}
-				else if (resultStr.ToInt() < 165)
-				{
-					resultDouble = arr_150_rate;
-				}
-				else if (resultStr.ToInt() < 195)
-				{
-					resultDouble = arr_180_rate;
-				}
-				else if (resultStr.ToInt() < 225)
-				{
-					resultDouble = arr_210_rate;
-				}
-				else if (resultStr.ToInt() < 255)
-				{
-					resultDouble = arr_240_rate;
-				}
-				else if (resultStr.ToInt() < 285)
-				{
-					resultDouble = arr_270_rate;
-				}
-				else if (resultStr.ToInt() < 310)
-				{
-					resultDouble = arr_300_rate;
-				}
-				else if (resultStr.ToInt() < 340)
-				{
-					resultDouble = arr_320_rate;
-				}	
 			}
 			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "   当前心率：" + resultStr;
 			resultStr = null;

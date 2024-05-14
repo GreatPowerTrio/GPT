@@ -410,7 +410,7 @@ namespace TCP_Helper.Forms.Setting
 					byte[] newdata = new byte[1024];
 					int lenth = TCPClient.Receive(newdata, 1024, SocketFlags.None);
 					DataReceived.Invoke(newdata.Take(lenth).ToArray());
-					RecByteTemp += lenth;
+					RecByteTemp += lenth; 
 
 				}
 				catch { }

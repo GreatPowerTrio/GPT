@@ -170,7 +170,7 @@ namespace TCP_Helper.Forms.Chart
 						resultDouble = arr_320_rate;
 					}
 			}
-			if (resultStr=="DISCONNECT")
+			if (resultStr.Contains("DISCONNECT"))
 			{
 				//删除start和end
 				UpdateButtonText("启动");

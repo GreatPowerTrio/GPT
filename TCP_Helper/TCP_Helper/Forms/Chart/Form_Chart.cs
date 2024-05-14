@@ -174,6 +174,7 @@ namespace TCP_Helper.Forms.Chart
 			{
 				//删除start和end
 				UpdateButtonText("启动");
+				this.timer1.Stop();
 				MessageBox.Show("设备已断开", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 

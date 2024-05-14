@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TCP_Helper.Forms.Chart
@@ -119,14 +120,7 @@ namespace TCP_Helper.Forms.Chart
 			}
 			if (head_flag && end_flag)
 			{
-				if (resultStr.Contains("DISCONNECT"))
-				{
-					//删除start和end
-					Chart_Btn.Text = "启动";
-					MessageBox.Show("设备已断开");
-				}
-				else
-				{
+				
 					if (resultStr.ToInt() < 45)
 					{
 						resultDouble = arr_30_rate;
@@ -175,16 +169,35 @@ namespace TCP_Helper.Forms.Chart
 					{
 						resultDouble = arr_320_rate;
 					}
-				}
 			}
+			if (resultStr.Contains("DISCONNECT"))
+			{
+				//删除start和end
+				UpdateButtonText("启动");
+				MessageBox.Show("设备已断开", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+
 			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "   当前心率：" + resultStr;
-			
+
 			head_flag = false;
 			end_flag = false;
 
 		}
-           
 
+		public void UpdateButtonText(string text)
+		{
+			// 检查是否需要跨线程调用
+			if (this.Chart_Btn.InvokeRequired)
+			{
+				// 如果需要，使用Invoke方法在创建控件的线程上执行操作
+				this.Chart_Btn.Invoke(new Action<string>(UpdateButtonText), new object[] { text });
+			}
+			else
+			{
+				// 如果不需要，直接更新按钮的文本
+				this.Chart_Btn.Text = text;
+			}
+		}
 		public void DataHandler(List<object> arg)
 		{
 			if (buffer.HasChanged())

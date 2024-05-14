@@ -178,7 +178,7 @@ namespace TCP_Helper.Forms.Chart
 				}
 			}
 			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "   当前心率：" + resultStr;
-			resultStr = null;
+			
 			head_flag = false;
 			end_flag = false;
 

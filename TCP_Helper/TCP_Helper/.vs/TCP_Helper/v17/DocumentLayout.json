@@ -27,7 +27,7 @@
       "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:Forms\\Home\\Form_Home.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|d:\\storage\\repo\\gpt\\tcp_helper\\tcp_helper\\forms\\home\\form_home.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\forms\\home\\form_home.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:forms\\home\\form_home.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -52,7 +52,7 @@
               "RelativeDocumentMoniker": "Forms\\Chart\\Form_Chart.cs",
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Chart\\Form_Chart.cs",
               "RelativeToolTip": "Forms\\Chart\\Form_Chart.cs",
-              "ViewState": "AQIAAGsAAAAAAAAAAAAYwH0AAAAeAAAA",
+              "ViewState": "AQIAAJkAAAAAAAAAAAAYwLQAAAADAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-09T11:37:27.193Z",
               "IsPinned": true,
@@ -67,8 +67,7 @@
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Home\\Form_Home.cs [\u8BBE\u8BA1]",
               "RelativeToolTip": "Forms\\Home\\Form_Home.cs [\u8BBE\u8BA1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-14T12:32:08.254Z",
-              "EditorCaption": " [\u8BBE\u8BA1]"
+              "WhenOpened": "2024-05-14T12:32:08.254Z"
             },
             {
               "$type": "Document",
@@ -79,8 +78,7 @@
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Chart\\Form_Chart.cs [\u8BBE\u8BA1]",
               "RelativeToolTip": "Forms\\Chart\\Form_Chart.cs [\u8BBE\u8BA1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-13T13:52:10.648Z",
-              "EditorCaption": " [\u8BBE\u8BA1]"
+              "WhenOpened": "2024-05-13T13:52:10.648Z"
             },
             {
               "$type": "Document",
@@ -91,8 +89,7 @@
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Desktop\\Form_Desktop.cs [\u8BBE\u8BA1]",
               "RelativeToolTip": "Forms\\Desktop\\Form_Desktop.cs [\u8BBE\u8BA1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-13T01:18:25.878Z",
-              "EditorCaption": " [\u8BBE\u8BA1]"
+              "WhenOpened": "2024-04-13T01:18:25.878Z"
             },
             {
               "$type": "Document",
@@ -104,8 +101,7 @@
               "RelativeToolTip": "Forms\\Setting\\Form_Setting.cs",
               "ViewState": "AQIAACkBAAAAAAAAAAAYwJwBAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T12:06:48.975Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-09T12:06:48.975Z"
             },
             {
               "$type": "Document",
@@ -116,8 +112,7 @@
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Setting\\Form_Setting.cs [\u8BBE\u8BA1]",
               "RelativeToolTip": "Forms\\Setting\\Form_Setting.cs [\u8BBE\u8BA1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T11:27:28.149Z",
-              "EditorCaption": " [\u8BBE\u8BA1]"
+              "WhenOpened": "2024-04-09T11:27:28.149Z"
             },
             {
               "$type": "Document",
@@ -129,8 +124,7 @@
               "RelativeToolTip": "Forms\\Home\\Form_Home.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T11:32:15.376Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-09T11:32:15.376Z"
             },
             {
               "$type": "Document",
@@ -142,8 +136,7 @@
               "RelativeToolTip": "Forms\\Desktop\\Form_Desktop.cs",
               "ViewState": "AQIAAAwAAAAAAAAAAAAAABgAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T11:13:42.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-09T11:13:42.563Z"
             }
           ]
         }

@@ -32,7 +32,6 @@
 			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
 			System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
 			this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-			this.DebugBox = new Sunny.UI.UITextBox();
 			this.Chart_Btn = new Sunny.UI.UIButton();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -86,21 +85,6 @@
 			this.chart.TabIndex = 6;
 			this.chart.Text = "chart";
 			// 
-			// DebugBox
-			// 
-			this.DebugBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.DebugBox.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.DebugBox.Location = new System.Drawing.Point(3, 57);
-			this.DebugBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.DebugBox.MinimumSize = new System.Drawing.Size(1, 16);
-			this.DebugBox.Name = "DebugBox";
-			this.DebugBox.Padding = new System.Windows.Forms.Padding(5);
-			this.DebugBox.ShowText = false;
-			this.DebugBox.Size = new System.Drawing.Size(894, 29);
-			this.DebugBox.TabIndex = 7;
-			this.DebugBox.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-			this.DebugBox.Watermark = "";
-			// 
 			// Chart_Btn
 			// 
 			this.Chart_Btn.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -127,7 +111,6 @@
 			this.BackColor = System.Drawing.Color.Snow;
 			this.ClientSize = new System.Drawing.Size(910, 580);
 			this.Controls.Add(this.Chart_Btn);
-			this.Controls.Add(this.DebugBox);
 			this.Controls.Add(this.chart);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "Form_Chart";
@@ -139,7 +122,6 @@
 
 		#endregion
 		private System.Windows.Forms.DataVisualization.Charting.Chart chart;
-		private Sunny.UI.UITextBox DebugBox;
         private Sunny.UI.UIButton Chart_Btn;
         private System.Windows.Forms.Timer timer1;
     }

@@ -77,7 +77,7 @@ namespace TCP_Helper.Forms.Chart
 			this.chart.Series.Add(series1);
 
 			this.chart.ChartAreas[0].AxisY.Minimum = 0;
-			this.chart.ChartAreas[0].AxisY.Maximum = 4096;
+			this.chart.ChartAreas[0].AxisY.Maximum = 700;
 			this.chart.ChartAreas[0].AxisX.Interval = 10;
 
 			this.chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
@@ -168,8 +168,7 @@ namespace TCP_Helper.Forms.Chart
 					resultDouble = arr_320_rate;
 				}	
 			}
-			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "当前心率：" + resultStr;
-			DebugBox_Add(newdata);
+			this.chart.Titles[0].Text = string.Format("心电\"波形\"显示") + "   当前心率：" + resultStr;
 			resultStr = null;
 			head_flag = false;
 			end_flag = false;
@@ -194,14 +193,7 @@ namespace TCP_Helper.Forms.Chart
 			}
 		}
 
-		private void DebugBox_Add(byte[] data) 
-		{
-			DebugBox.Invoke(new Action(() =>
-			{
-				DebugBox.AppendText("-" + Encoding.ASCII.GetString(data));
 
-            }));	
-		}
 		#region 数据解包
 		//帧头  帧尾
 		private byte sof = 0x28;
@@ -407,7 +399,7 @@ namespace TCP_Helper.Forms.Chart
              for (int i = 0; i < num; i++)
              {
 
-				dataQueue.Enqueue(resultDouble[cnt]);
+				dataQueue.Enqueue(resultDouble[cnt]-1750);
 				cnt++;
 				if (cnt >= resultDouble.Length) 
 				{

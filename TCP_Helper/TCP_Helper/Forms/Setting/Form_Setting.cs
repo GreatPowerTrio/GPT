@@ -411,10 +411,7 @@ namespace TCP_Helper.Forms.Setting
 					int lenth = TCPClient.Receive(newdata, 1024, SocketFlags.None);
 					DataReceived.Invoke(newdata.Take(lenth).ToArray());
 					RecByteTemp += lenth;
-					DebugTB.Invoke((MethodInvoker)delegate
-					{
-						DebugTB.AppendText(Encoding.ASCII.GetString(newdata.Take(lenth).ToArray()));
-					});
+
 				}
 				catch { }
 			}

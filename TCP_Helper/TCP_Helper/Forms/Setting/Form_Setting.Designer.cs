@@ -39,7 +39,6 @@
 			this.TXComboBox = new Sunny.UI.UIComboBox();
 			this.uiLabel2 = new Sunny.UI.UILabel();
 			this.EncodingBox = new Sunny.UI.UIComboBox();
-			this.DebugTB = new Sunny.UI.UITextBox();
 			this.SuspendLayout();
 			// 
 			// RemoteIP_Label
@@ -213,28 +212,12 @@
 			this.EncodingBox.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
 			this.EncodingBox.Watermark = "";
 			// 
-			// DebugTB
-			// 
-			this.DebugTB.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.DebugTB.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.DebugTB.Location = new System.Drawing.Point(143, 396);
-			this.DebugTB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.DebugTB.MinimumSize = new System.Drawing.Size(1, 16);
-			this.DebugTB.Name = "DebugTB";
-			this.DebugTB.Padding = new System.Windows.Forms.Padding(5);
-			this.DebugTB.ShowText = false;
-			this.DebugTB.Size = new System.Drawing.Size(602, 50);
-			this.DebugTB.TabIndex = 1;
-			this.DebugTB.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-			this.DebugTB.Watermark = "";
-			// 
 			// Form_Setting
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.Snow;
 			this.ClientSize = new System.Drawing.Size(910, 580);
-			this.Controls.Add(this.DebugTB);
 			this.Controls.Add(this.EncodingBox);
 			this.Controls.Add(this.uiLabel2);
 			this.Controls.Add(this.TXComboBox);
@@ -266,6 +249,5 @@
 		private Sunny.UI.UIComboBox TXComboBox;
 		private Sunny.UI.UILabel uiLabel2;
 		private Sunny.UI.UIComboBox EncodingBox;
-		private Sunny.UI.UITextBox DebugTB;
 	}
 }

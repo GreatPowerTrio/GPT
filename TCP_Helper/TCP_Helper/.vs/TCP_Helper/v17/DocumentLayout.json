@@ -11,16 +11,16 @@
       "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:forms\\setting\\form_setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Setting\\Form_Setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:Forms\\Setting\\Form_Setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\forms\\chart\\form_chart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:forms\\chart\\form_chart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\forms\\desktop\\form_desktop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:forms\\desktop\\form_desktop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Setting\\Form_Setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|solutionrelative:Forms\\Setting\\Form_Setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{31D7AD54-282F-48C7-93FE-E571DEF4BE8F}|TCP_Helper.csproj|D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Desktop\\Form_Desktop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "Forms\\Chart\\Form_Chart.cs",
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Chart\\Form_Chart.cs",
               "RelativeToolTip": "Forms\\Chart\\Form_Chart.cs",
-              "ViewState": "AQIAAJoAAAAAAAAAAAAswKoAAABRAAAA",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAwwKUAAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-09T11:37:27.193Z",
               "IsPinned": true,
@@ -56,7 +56,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Form_Chart.cs [\u8BBE\u8BA1]",
               "DocumentMoniker": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Chart\\Form_Chart.cs",
               "RelativeDocumentMoniker": "Forms\\Chart\\Form_Chart.cs",
@@ -68,25 +68,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Form_Desktop.cs [\u8BBE\u8BA1]",
               "DocumentMoniker": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Desktop\\Form_Desktop.cs",
               "RelativeDocumentMoniker": "Forms\\Desktop\\Form_Desktop.cs",
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Desktop\\Form_Desktop.cs [\u8BBE\u8BA1]",
               "RelativeToolTip": "Forms\\Desktop\\Form_Desktop.cs [\u8BBE\u8BA1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-13T01:18:25.878Z",
-              "EditorCaption": " [\u8BBE\u8BA1]"
+              "WhenOpened": "2024-04-13T01:18:25.878Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Form_Setting.cs",
               "DocumentMoniker": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Setting\\Form_Setting.cs",
               "RelativeDocumentMoniker": "Forms\\Setting\\Form_Setting.cs",
               "ToolTip": "D:\\Storage\\Repo\\GPT\\TCP_Helper\\TCP_Helper\\Forms\\Setting\\Form_Setting.cs",
               "RelativeToolTip": "Forms\\Setting\\Form_Setting.cs",
-              "ViewState": "AQIAAOcAAAAAAAAAAAAQwJsBAAAFAAAA",
+              "ViewState": "AQIAAI8BAAAAAAAAAAAIwJwBAAAaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-09T12:06:48.975Z",
               "EditorCaption": ""
@@ -125,8 +124,7 @@
               "RelativeToolTip": "Forms\\Desktop\\Form_Desktop.cs",
               "ViewState": "AQIAAAwAAAAAAAAAAAAAABgAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T11:13:42.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-09T11:13:42.563Z"
             }
           ]
         }

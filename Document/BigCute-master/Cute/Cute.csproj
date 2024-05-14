@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A54CC0F5-4888-49A1-9BB7-1ACFAF72319B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Cute</RootNamespace>
+    <AssemblyName>Cute</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationIcon>Cute.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Config\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Cute.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>26275DB36EC646B4C69E54D9EA69C660E3AA1311</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Cute_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="components\AccurateTimer.cs" />
+    <Compile Include="components\Common.cs" />
+    <Compile Include="Forms\desktop\FormLAN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\desktop\FormLAN.Designer.cs">
+      <DependentUpon>FormLAN.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\FrameUnPack.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="components\DataBuffer.cs" />
+    <Compile Include="components\DataSave.cs" />
+    <Compile Include="components\SelectTab.cs" />
+    <Compile Include="Forms\desktop\Desktop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\desktop\Desktop.Designer.cs">
+      <DependentUpon>Desktop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\data\FormChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\data\FormChart.Designer.cs">
+      <DependentUpon>FormChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\desktop\FormComConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\desktop\FormComConfig.Designer.cs">
+      <DependentUpon>FormComConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\basic\FormBasic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\basic\FormBasic.Designer.cs">
+      <DependentUpon>FormBasic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\desktop\FormSerialComBaud.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\desktop\FormSerialComBaud.Designer.cs">
+      <DependentUpon>FormSerialComBaud.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\data\FormData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\data\FormData.Designer.cs">
+      <DependentUpon>FormData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormAdd.Designer.cs">
+      <DependentUpon>FormAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormBar.Designer.cs">
+      <DependentUpon>FormBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormCascadePID.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormCascadePID.Designer.cs">
+      <DependentUpon>FormCascadePID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormOneParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormOneParam.Designer.cs">
+      <DependentUpon>FormOneParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\FormParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\FormParam.Designer.cs">
+      <DependentUpon>FormParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormSinglePID.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\param\subforms\FormSinglePID.Designer.cs">
+      <DependentUpon>FormSinglePID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\param\ParamMsg.cs" />
+    <Compile Include="Forms\pic\Algorithm.cs" />
+    <Compile Include="Forms\pic\FormPic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\pic\FormPic.Designer.cs">
+      <DependentUpon>FormPic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\pic\ImageUnpack.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\desktop\Desktop.resx">
+      <DependentUpon>Desktop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\data\FormChart.resx">
+      <DependentUpon>FormChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\desktop\FormComConfig.resx">
+      <DependentUpon>FormComConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\basic\FormBasic.resx">
+      <DependentUpon>FormBasic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\desktop\FormLAN.resx">
+      <DependentUpon>FormLAN.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\desktop\FormSerialComBaud.resx">
+      <DependentUpon>FormSerialComBaud.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\data\FormData.resx">
+      <DependentUpon>FormData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\subforms\FormAdd.resx">
+      <DependentUpon>FormAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\subforms\FormBar.resx">
+      <DependentUpon>FormBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\subforms\FormCascadePID.resx">
+      <DependentUpon>FormCascadePID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\subforms\FormOneParam.resx">
+      <DependentUpon>FormOneParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\FormParam.resx">
+      <DependentUpon>FormParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\param\subforms\FormSinglePID.resx">
+      <DependentUpon>FormSinglePID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\pic\FormPic.resx">
+      <DependentUpon>FormPic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Config\app.manifest" />
+    <None Include="Cute_TemporaryKey.pfx" />
+    <None Include="Properties\DataSources\Desktop.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\编译.png" />
+    <None Include="Resources\导出到文件夹.png" />
+    <None Include="Resources\文件夹导入.png" />
+    <None Include="Resources\Zoom.png" />
+    <None Include="Resources\Wallner.png" />
+    <None Include="Resources\导入.png" />
+    <None Include="Resources\清除.png" />
+    <None Include="Resources\新建.png" />
+    <None Include="Resources\保存.png" />
+    <None Include="Resources\y轴自由.png" />
+    <None Include="Resources\y轴固定.png" />
+    <None Include="Resources\y轴自适应.png" />
+    <None Include="Resources\自动更新.png" />
+    <None Include="Resources\关闭自动更新.png" />
+    <None Include="Resources\缩小.png" />
+    <None Include="Resources\删除.png" />
+    <None Include="Resources\放大.png" />
+    <None Include="Resources\最小化.png" />
+    <None Include="Resources\Ave.png" />
+    <None Include="Resources\Otsu.png" />
+    <None Include="Resources\self.png" />
+    <None Include="Resources\Origin.png" />
+    <None Include="Resources\detector1.png" />
+    <None Include="Resources\detector2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\通信配置.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\基础收发.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\参数调节.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\数据接收.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\图像接收.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Cute.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

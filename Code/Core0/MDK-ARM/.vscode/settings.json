@@ -1,0 +1,22 @@
+{
+  "files.associations": {
+    "main.h": "c",
+    "freertos.h": "c",
+    "spi.h": "c",
+    "cmsis_os.h": "c",
+    "filter.h": "c",
+    "dma.h": "c",
+    "at_cmdset.h": "c",
+    "usart.h": "c",
+    "gpio.h": "c",
+    "wifi.h": "c",
+    "stm32f1xx_it.h": "c",
+    "iosfwd": "c",
+    "limits": "c",
+    "memory": "c",
+    "string": "c",
+    "exception": "c",
+    "utility": "c",
+    "adc.h": "c"
+  }
+}

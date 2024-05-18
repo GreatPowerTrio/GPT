@@ -37,8 +37,8 @@ typedef StaticTask_t osStaticThreadDef_t;
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-#define BUFFER_SIZE 100
-#define K           10
+#define BUFFER_SIZE     100
+#define K               10
 
 
 #define LEAD_ADC_MAX    2400
@@ -77,7 +77,7 @@ bool     peak_flag;
 bool lead_state = false;
 
 /* 预警阈值 */
-uint16_t ecg_warning_level = 150 - 10;
+uint16_t ecg_warning_level_up = 150 - 10, ecg_warning_level_down = 30 + 10;
 
 /* 创建wifi发送任务 */
 bool wifi_flag = false;
@@ -128,7 +128,7 @@ const osMutexAttr_t C2CMutex_attributes = {
 
 void CheckLeadState(uint16_t data);
 uint16_t EncodeData(uint16_t data);
-void WarningAboveLevel(uint16_t level);
+void WarningLevel(uint16_t level_up, uint16_t level_down);
 void WifiAccept(void);
 
 /* USER CODE END FunctionPrototypes */
@@ -285,7 +285,7 @@ void StartAlgorithmTask(void *argument)
 
       // 超限报警
       if(!wifi_flag)
-        WarningAboveLevel(ecg_warning_level);
+        WarningLevel(ecg_warning_level_up, ecg_warning_level_down);
     }
     else 
       peak_flag = false;
@@ -438,14 +438,14 @@ uint16_t EncodeData(uint16_t data)
 
 
 // 超限报警
-void WarningAboveLevel(uint16_t level)
+void WarningLevel(uint16_t level_up, uint16_t level_down)
 {
   static uint8_t cnt5 = 0;
   
-  if(ecg_rate > level && lead_state)
+  if((ecg_rate > level_up || ecg_rate < level_down) && lead_state)
   {
     // 待心率稳定后
-    if(cnt5 == 5)
+    if(cnt5 == 1)
     {
       // 设置PWM，即设置蜂鸣器频率
       if(TIM2->CCR4 == 400)
@@ -494,6 +494,10 @@ void WifiAccept(void)
       vTaskDelete(LEDDebugTaskHandle);
       LEDDebugTaskHandle = NULL;
     }
+
+    //发送结束信息
+    print_wifi("AT+CIPSEND=0,10\r\n");
+    print_wifi("DISCONNECT\r\n");
   }
 }
 

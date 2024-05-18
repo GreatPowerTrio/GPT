@@ -12,6 +12,8 @@
     "_mutex.h": "c",
     "lcd.h": "c",
     "pic.h": "c",
-    "string": "c"
+    "string": "c",
+    "lcd_init.h": "c",
+    "lcdfont.h": "c"
   }
 }

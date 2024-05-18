@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Core0\Core0.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Core0\Core0.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060183: Last Updated: Sun May 12 20:57:50 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060183: Last Updated: Tue May 14 22:06:03 2024
 <BR><P>
 <H3>Maximum Stack Usage =        800 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -478,7 +478,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sputc
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_common
 </UL>
-<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
+<BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WifiAccept
+<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wifi_set_AP
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wifi_send_data
 </UL>
@@ -1170,7 +1171,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
+<BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WifiAccept
+<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wifi_set_AP
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wifi_send_data
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
@@ -1272,7 +1274,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f103xe.o(RESET)
 </UL>
-<P><STRONG><a name="[51]"></a>StartAlgorithmTask</STRONG> (Thumb, 366 bytes, Stack size 600 bytes, freertos.o(i.StartAlgorithmTask))
+<P><STRONG><a name="[51]"></a>StartAlgorithmTask</STRONG> (Thumb, 368 bytes, Stack size 600 bytes, freertos.o(i.StartAlgorithmTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 800 + Unknown Stack Size
 <LI>Call Chain = StartAlgorithmTask &rArr; WifiAccept &rArr; osThreadNew &rArr; xTaskCreate &rArr; pvPortMalloc &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
@@ -1281,7 +1283,7 @@ Global Symbols
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexAcquire
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WifiAccept
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WarningAboveLevel
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WarningLevel
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckLeadState
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Filter_Init
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ButterworthFliter
@@ -1405,18 +1407,22 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f103xe.o(RESET)
 </UL>
-<P><STRONG><a name="[e7]"></a>WarningAboveLevel</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, freertos.o(i.WarningAboveLevel))
-<BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
+<P><STRONG><a name="[e7]"></a>WarningLevel</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, freertos.o(i.WarningLevel))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = WarningLevel
+</UL>
+<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
 </UL>
 
-<P><STRONG><a name="[e8]"></a>WifiAccept</STRONG> (Thumb, 138 bytes, Stack size 24 bytes, freertos.o(i.WifiAccept))
+<P><STRONG><a name="[e8]"></a>WifiAccept</STRONG> (Thumb, 182 bytes, Stack size 24 bytes, freertos.o(i.WifiAccept))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200 + Unknown Stack Size
 <LI>Call Chain = WifiAccept &rArr; osThreadNew &rArr; xTaskCreate &rArr; pvPortMalloc &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelete
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadNew
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAlgorithmTask
 </UL>

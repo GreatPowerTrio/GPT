@@ -62,7 +62,8 @@ bool key_locked = false;
 
 
 
-static uint32_t color = BLUE;
+static uint32_t setting_color1 = BLUE;
+static uint32_t setting_color2 = BLUE;
 
 /* USER CODE END Variables */
 /* Definitions for DebugTask */
@@ -241,10 +242,12 @@ void StartInterfaceTask(void *argument)
   static uint8_t thick = 3;
 
   // 动画只播放一次的标志位
-  static bool once_flag = false;
+  // static bool once_flag = false;
 
   // 动画正在播放，锁住按键
   key_locked = true;
+
+  bool finished_flag = false;
 
   /* Infinite loop */
   for(;;)
@@ -259,7 +262,8 @@ void StartInterfaceTask(void *argument)
       vTaskDelete(NULL);
     }
 
-    if(!once_flag)
+    // if(!once_flag)
+    if(!finished_flag)
     {
       // 第一次进入
 
@@ -276,19 +280,20 @@ void StartInterfaceTask(void *argument)
       // 动画三阶段：显示底部提示图标
       LCD_ShowPicture(LCD_W - BOTTOM_W, LCD_H - BOTTOM_H, BOTTOM_W, BOTTOM_H, img_bottom);
       
-      once_flag     = true;
+      finished_flag = true;
+      // once_flag     = true;
       // 动画结束
       key_locked    = false;
     }
-    else
-    {
-      // 第二次进入时不会播放动画，直接显示图标
-      LCD_Fill(X, Y + GTP_H, X + GTP_W, Y + GTP_H + thick, YELLOW);
-      LCD_ShowPicture(X, Y, GTP_W, GTP_H, img_GPT);
-      LCD_ShowPicture(LCD_W - BOTTOM_W, LCD_H - BOTTOM_H, BOTTOM_W, BOTTOM_H, img_bottom);
-      // 动画结束
-      key_locked   = false;
-    }
+    // else
+    // {
+    //   // 第二次进入时不会播放动画，直接显示图标
+    //   LCD_Fill(X, Y + GTP_H, X + GTP_W, Y + GTP_H + thick, YELLOW);
+    //   LCD_ShowPicture(X, Y, GTP_W, GTP_H, img_GPT);
+    //   LCD_ShowPicture(LCD_W - BOTTOM_W, LCD_H - BOTTOM_H, BOTTOM_W, BOTTOM_H, img_bottom);
+    //   // 动画结束
+    //   key_locked   = false;
+    // }
 
     osDelay(1);
   }
@@ -452,25 +457,30 @@ void StartECGTask(void *argument)
   uint16_t data, wave_data, rate_data;
 
   // 画线的坐标
-  static uint16_t x = 1, y = 40, last_y = 40;
+  static uint16_t x = 1, y = 80, last_y = 80;
 
   // 心率初始图标
-  LCD_ShowPicture(35, 120, 20, 20, img_heart);
+  LCD_ShowPicture(5, 120, 20, 20, img_heart);
   // 心率初始为0
-  LCD_ShowIntNum(55, 120, 0, 3, CYAN, BLACK, 16);
+  LCD_ShowIntNum(25, 120, 0, 3, CYAN, BLACK, 16);
   // 导联状态提示词
   LCD_ShowPicture(5, 5, 69, 20, img_word);
   // 初始导联状态为断开
   LCD_ShowPicture(80, 5, 20, 20, img_lead_off);  
+
+
+  // 显示阈值
+  LCD_ShowString(75, 120, "30-150", CYAN, BLACK, 16, 0);
+
 
   /* Infinite loop */
   for(;;)
   {
     if(key3_flag)
     {
-      key2_flag = key1_flag = key3_flag = false;
       LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
       MenuTaskHandle = osThreadNew(StartMenuTask, NULL, &MenuTask_attributes);
+      key2_flag = key1_flag = key3_flag = false;
       vTaskDelete(NULL);    
     }
 
@@ -482,9 +492,9 @@ void StartECGTask(void *argument)
     {
       rate_data = data;
       if(lead_state)
-        LCD_ShowIntNum(55, 120, rate_data, 3, CYAN, BLACK, 16);
+        LCD_ShowIntNum(25, 120, rate_data, 3, CYAN, BLACK, 16);
       else  
-        LCD_ShowIntNum(55, 120, 0,         3, CYAN, BLACK, 16);
+        LCD_ShowIntNum(25, 120, 0,         3, CYAN, BLACK, 16);
     }
     else 
       wave_data  = data; 
@@ -499,16 +509,16 @@ void StartECGTask(void *argument)
     // LCD_ShowIntNum(0, 144, wave_data, 4, BLACK, BLACK, 16);
 
     // 将波形数据处理映射后显示
-    y = 40 + (wave_data - 1780) * 80 / 520;
-    if(y < 40)  y = 40;
-    if(y > 120) y = 120;
+    y = 40 + (wave_data - 1750) * 80 / 520;
+    if(y < 40)      y = 40;
+    if(y > 120)     y = 120;
     if(!lead_state) y = 80;
     
     /* 画线，后两行起加粗作用 */
-    LCD_DrawLine(x - 1, LCD_H - last_y, x, LCD_H - y, color);
-    LCD_DrawLine(x, LCD_H - y, x + 1, LCD_H - last_y, color);
-    LCD_DrawLine(x, LCD_H - last_y, x + 1, LCD_H - y, color);
-    LCD_DrawLine(x + 1, LCD_H - y, x + 2, LCD_H - last_y, color);
+    LCD_DrawLine(x - 1, LCD_H - last_y, x,     LCD_H - y,      setting_color1);
+    LCD_DrawLine(x,     LCD_H - y,      x + 1, LCD_H - last_y, setting_color1);
+    LCD_DrawLine(x,     LCD_H - last_y, x + 1, LCD_H - y,      setting_color2);
+    LCD_DrawLine(x + 1, LCD_H - y,      x + 2, LCD_H - last_y, setting_color2);
 
     // 画满一屏后清屏
     x++;
@@ -537,16 +547,20 @@ void StartWifiTask(void *argument)
   {
     if(key3_flag)
     {
-      key2_flag = key1_flag = key3_flag = false;
-
       HAL_GPIO_WritePin(C2C_WIFI_GPIO_Port, C2C_WIFI_Pin, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
       LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
 
       MenuTaskHandle = osThreadNew(StartMenuTask, NULL, &MenuTask_attributes);
+      key2_flag = key1_flag = key3_flag = false;
       vTaskDelete(NULL); 
     } 
-    LCD_ShowString(0, 0, "WIFI", BLUE, BLACK, 16, 0);  
+
+    // 显示ESP8266相关信息
+    LCD_ShowString(0, 40 + 16 * 0, "WIFI:GPT", WHITE, BLACK, 16, 0);
+    LCD_ShowString(0, 40 + 16 * 1, "Pwd: 12345678", WHITE, BLACK, 16, 0);
+    LCD_ShowString(0, 40 + 16 * 2, "IP:  192.168.4.1", WHITE, BLACK, 16, 0);
+    LCD_ShowString(0, 40 + 16 * 3, "Port:8080", WHITE, BLACK, 16, 0);
 
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(C2C_WIFI_GPIO_Port, C2C_WIFI_Pin, GPIO_PIN_SET);
@@ -566,17 +580,75 @@ void StartWifiTask(void *argument)
 void StartSettingTask(void *argument)
 {
   /* USER CODE BEGIN StartSettingTask */
+  static uint16_t color_list[] = {BLUE, RED, WHITE, BRED, GREEN, YELLOW, LGRAY};
+
+  static uint8_t p1 = 0, p21 = 0, p22 = 0;
+
+
+  static uint8_t list_len = sizeof(color_list) / sizeof(uint16_t);
   /* Infinite loop */
   for(;;)
   {
     if(key3_flag)
     {
-      key2_flag = key1_flag = key3_flag = false;
       LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
       MenuTaskHandle = osThreadNew(StartMenuTask, NULL, &MenuTask_attributes);
+      key2_flag = key1_flag = key3_flag = false;
       vTaskDelete(NULL);   
-    }   
-    LCD_ShowString(0, 0, "SETTING", BLUE, BLACK, 16, 0);   
+    }
+
+
+    // 一级菜单下一个 项目
+    if(key2_flag)
+    {
+      key2_flag = false;
+
+      p1 = (p1 == 0 ? 1 : 0);
+    }
+
+    // 二级菜单下一个 颜色
+    if(key1_flag)
+    {
+      key1_flag = false;
+
+      if(p1 == 0)
+      {
+        p21++;
+        p21 %= list_len;
+        setting_color1 = color_list[p21];
+      }
+      else if(p1 == 1)
+      {
+        p22++;
+        p22 %= list_len;
+        setting_color2 = color_list[p22];
+      }
+    }
+
+
+    if(p1 == 0)
+    {
+      Draw_Circle(4, 18 + 16 * 0, 3, BLUE);
+      Draw_Circle(4, 18 + 16 * 1, 3, BLACK);
+    }
+    else 
+    {
+      Draw_Circle(4, 18 + 16 * 1, 3, BLUE);
+      Draw_Circle(4, 18 + 16 * 0, 3, BLACK);
+    }
+
+
+
+    LCD_ShowString(10, 10 + 0 * 16, "COLOR1:", MAGENTA, BLACK, 16, 0); 
+
+    LCD_Fill(10 + 7 * 8, 10 + 0 * 16, 10 + 7 * 8 + 16, 10 + 0 * 16 + 16, setting_color1);
+
+    LCD_ShowString(10, 10 + 1 * 16, "COLOR2:", MAGENTA, BLACK, 16, 0);   
+    
+    LCD_Fill(10 + 7 * 8, 10 + 1 * 16, 10 + 7 * 8 + 16, 10 + 1 * 16 + 16, setting_color2);
+    
+    
+    
     osDelay(1);
   }
   /* USER CODE END StartSettingTask */
